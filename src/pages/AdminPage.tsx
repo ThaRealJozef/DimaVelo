@@ -86,11 +86,16 @@ export default function AdminPage() {
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.error('DEBUG: handleAddProduct called');
+    console.error('DEBUG: Product data:', newProduct);
+    console.error('DEBUG: Images to upload:', productImages);
+
     setIsSubmitting(true);
 
     try {
       const slug = productService.generateSlug(newProduct.nameFr);
-      
+
+      console.error('DEBUG: Calling productService.createProduct...');
       await productService.createProduct(
         {
           nameFr: newProduct.nameFr,
@@ -103,7 +108,7 @@ export default function AdminPage() {
           stockQuantity: parseInt(newProduct.stockQuantity),
           descriptionFr: newProduct.descriptionFr,
           descriptionEn: newProduct.descriptionEn || newProduct.descriptionFr,
-          descriptionAr: newProduct.descriptionAr || newProduct.descriptionFr,
+          descriptionAr: newProduct.descriptionAr || newProduct.nameFr,
           images: [],
           specifications: {},
           isAvailable: parseInt(newProduct.stockQuantity) > 0,
@@ -112,15 +117,17 @@ export default function AdminPage() {
         },
         productImages
       );
+      console.error('DEBUG: productService.createProduct completed successfully');
 
       toast.success('Produit ajouté avec succès !');
       setIsAddProductOpen(false);
       resetForm();
       refreshProducts();
     } catch (error) {
+      console.error('DEBUG: Error in handleAddProduct:', error);
       toast.error('Erreur lors de l\'ajout du produit');
-      console.error(error);
     } finally {
+      console.error('DEBUG: Setting isSubmitting to false');
       setIsSubmitting(false);
     }
   };
@@ -239,7 +246,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      
+
       <main className="flex-1">
         {/* Hero Admin */}
         <section className="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-8">
@@ -249,8 +256,8 @@ export default function AdminPage() {
                 <h1 className="text-3xl font-bold mb-2">Tableau de Bord Admin</h1>
                 <p className="text-gray-300">Gérez votre magasin facilement</p>
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={handleLogout}
                 className="bg-white/10 hover:bg-white/20 text-white border-white/20"
               >

@@ -14,6 +14,8 @@ import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
+import TestImageUpload from '@/components/TestImageUpload';
+
 
 const queryClient = new QueryClient();
 
@@ -60,7 +62,7 @@ const App = () => (
                   </ProtectedRoute>
                 } 
               />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/test-upload" element={<TestImageUpload />} />
             </Routes>
           </div>
         </BrowserRouter>

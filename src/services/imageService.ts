@@ -1,19 +1,15 @@
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
+import { uploadImageToImgBB } from '@/utils/imageUpload';
 
 export const imageService = {
   /**
-   * Upload an image to Firebase Storage
+   * Upload an image to ImgBB
    * @param file - The image file to upload
-   * @param path - The storage path (e.g., 'products/image-name.jpg')
+   * @param path - Unused in ImgBB implementation, kept for compatibility
    * @returns The download URL of the uploaded image
    */
-  async uploadImage(file: File, path: string): Promise<string> {
+  async uploadImage(file: File, path?: string): Promise<string> {
     try {
-      const storageRef = ref(storage, path);
-      const snapshot = await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      return downloadURL;
+      return await uploadImageToImgBB(file);
     } catch (error) {
       console.error('Error uploading image:', error);
       throw new Error('Failed to upload image');
@@ -21,20 +17,14 @@ export const imageService = {
   },
 
   /**
-   * Upload multiple images to Firebase Storage
+   * Upload multiple images to ImgBB
    * @param files - Array of image files to upload
-   * @param basePath - The base storage path (e.g., 'products')
+   * @param basePath - Unused in ImgBB implementation, kept for compatibility
    * @returns Array of download URLs
    */
-  async uploadMultipleImages(files: File[], basePath: string): Promise<string[]> {
+  async uploadMultipleImages(files: File[], basePath?: string): Promise<string[]> {
     try {
-      const uploadPromises = files.map((file, index) => {
-        const timestamp = Date.now();
-        const fileName = `${timestamp}-${index}-${file.name}`;
-        const path = `${basePath}/${fileName}`;
-        return this.uploadImage(file, path);
-      });
-
+      const uploadPromises = files.map((file) => this.uploadImage(file));
       return await Promise.all(uploadPromises);
     } catch (error) {
       console.error('Error uploading multiple images:', error);
@@ -43,39 +33,26 @@ export const imageService = {
   },
 
   /**
-   * Delete an image from Firebase Storage
-   * @param imageUrl - The full URL of the image to delete
+   * Delete an image
+   * Note: ImgBB API simple upload doesn't support deletion via API key without extra setup.
+   * This is a placeholder to prevent errors in existing code.
+   * @param imageUrl - The URL of the image
    */
   async deleteImage(imageUrl: string): Promise<void> {
-    try {
-      // Extract the path from the URL
-      const baseUrl = `https://firebasestorage.googleapis.com/v0/b/${import.meta.env.VITE_FIREBASE_STORAGE_BUCKET}/o/`;
-      if (!imageUrl.startsWith(baseUrl)) {
-        throw new Error('Invalid Firebase Storage URL');
-      }
-
-      const encodedPath = imageUrl.split(baseUrl)[1].split('?')[0];
-      const path = decodeURIComponent(encodedPath);
-      
-      const storageRef = ref(storage, path);
-      await deleteObject(storageRef);
-    } catch (error) {
-      console.error('Error deleting image:', error);
-      throw new Error('Failed to delete image');
-    }
+    console.warn('Image deletion is not supported with ImgBB simple integration. Image URL:', imageUrl);
+    // No-op
+    return Promise.resolve();
   },
 
   /**
-   * Delete multiple images from Firebase Storage
-   * @param imageUrls - Array of image URLs to delete
+   * Delete multiple images
+   * Note: ImgBB API simple upload doesn't support deletion via API key without extra setup.
+   * This is a placeholder to prevent errors in existing code.
+   * @param imageUrls - Array of image URLs
    */
   async deleteMultipleImages(imageUrls: string[]): Promise<void> {
-    try {
-      const deletePromises = imageUrls.map((url) => this.deleteImage(url));
-      await Promise.all(deletePromises);
-    } catch (error) {
-      console.error('Error deleting multiple images:', error);
-      throw new Error('Failed to delete images');
-    }
+    console.warn('Image deletion is not supported with ImgBB simple integration.', imageUrls);
+    // No-op
+    return Promise.resolve();
   },
 };
