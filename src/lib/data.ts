@@ -1,0 +1,333 @@
+// Données mock pour le site web du magasin de vélos
+import { Product, Category, Subcategory } from './types';
+
+export const categories: Category[] = [
+  {
+    id: '1',
+    nameFr: 'Vélos',
+    nameEn: 'Bikes',
+    nameAr: 'الدراجات',
+    slug: 'velos',
+    descriptionFr: 'Découvrez notre sélection de vélos pour tous les niveaux',
+    descriptionEn: 'Discover our selection of bikes for all levels',
+    descriptionAr: 'اكتشف مجموعتنا من الدراجات لجميع المستويات',
+    imageUrl: '/assets/category-velos.jpg',
+    displayOrder: 1,
+  },
+  {
+    id: '2',
+    nameFr: 'Accessoires',
+    nameEn: 'Accessories',
+    nameAr: 'الإكسسوارات',
+    slug: 'accessoires',
+    descriptionFr: 'Équipez-vous avec nos accessoires de qualité',
+    descriptionEn: 'Equip yourself with our quality accessories',
+    descriptionAr: 'جهز نفسك بملحقاتنا عالية الجودة',
+    imageUrl: '/assets/category-accessoires.jpg',
+    displayOrder: 2,
+  },
+  {
+    id: '3',
+    nameFr: 'Vêtements',
+    nameEn: 'Clothing',
+    nameAr: 'الملابس',
+    slug: 'vetements',
+    descriptionFr: 'Vêtements de cyclisme pour tous les temps',
+    descriptionEn: 'Cycling clothing for all weather',
+    descriptionAr: 'ملابس ركوب الدراجات لجميع الأحوال الجوية',
+    imageUrl: '/assets/category-vetements.jpg',
+    displayOrder: 3,
+  },
+  {
+    id: '4',
+    nameFr: 'Chaussures',
+    nameEn: 'Shoes',
+    nameAr: 'الأحذية',
+    slug: 'chaussures',
+    descriptionFr: 'Chaussures de cyclisme pour route et VTT',
+    descriptionEn: 'Cycling shoes for road and mountain biking',
+    descriptionAr: 'أحذية ركوب الدراجات للطريق والجبال',
+    imageUrl: '/assets/category-chaussures.jpg',
+    displayOrder: 4,
+  },
+];
+
+export const subcategories: Subcategory[] = [
+  // Vélos subcategories
+  {
+    id: '1-1',
+    nameFr: 'Vélo de Route',
+    nameEn: 'Road Bike',
+    nameAr: 'دراجة الطريق',
+    slug: 'velo-de-route',
+    parentCategoryId: '1',
+  },
+  {
+    id: '1-2',
+    nameFr: 'VTT',
+    nameEn: 'Mountain Bike',
+    nameAr: 'دراجة جبلية',
+    slug: 'vtt',
+    parentCategoryId: '1',
+  },
+  {
+    id: '1-3',
+    nameFr: 'Gravel',
+    nameEn: 'Gravel Bike',
+    nameAr: 'دراجة حصى',
+    slug: 'gravel',
+    parentCategoryId: '1',
+  },
+  {
+    id: '1-4',
+    nameFr: 'Vélo de Ville',
+    nameEn: 'City Bike',
+    nameAr: 'دراجة المدينة',
+    slug: 'velo-de-ville',
+    parentCategoryId: '1',
+  },
+  // Accessoires subcategories
+  {
+    id: '2-1',
+    nameFr: 'Pneus',
+    nameEn: 'Tires',
+    nameAr: 'الإطارات',
+    slug: 'pneus',
+    parentCategoryId: '2',
+  },
+  {
+    id: '2-2',
+    nameFr: 'Roues',
+    nameEn: 'Wheels',
+    nameAr: 'العجلات',
+    slug: 'roues',
+    parentCategoryId: '2',
+  },
+  {
+    id: '2-3',
+    nameFr: 'Entretien',
+    nameEn: 'Maintenance',
+    nameAr: 'الصيانة',
+    slug: 'entretien',
+    parentCategoryId: '2',
+  },
+  {
+    id: '2-4',
+    nameFr: 'Électroniques',
+    nameEn: 'Electronics',
+    nameAr: 'الإلكترونيات',
+    slug: 'electroniques',
+    parentCategoryId: '2',
+  },
+  {
+    id: '2-5',
+    nameFr: 'Éclairage',
+    nameEn: 'Lighting',
+    nameAr: 'الإضاءة',
+    slug: 'eclairage',
+    parentCategoryId: '2',
+  },
+  // Vêtements subcategories
+  {
+    id: '3-1',
+    nameFr: 'Maillot',
+    nameEn: 'Jersey',
+    nameAr: 'قميص',
+    slug: 'maillot',
+    parentCategoryId: '3',
+  },
+  {
+    id: '3-2',
+    nameFr: 'Sous-Vêtements',
+    nameEn: 'Underwear',
+    nameAr: 'الملابس الداخلية',
+    slug: 'sous-vetements',
+    parentCategoryId: '3',
+  },
+  {
+    id: '3-3',
+    nameFr: 'Cuissard',
+    nameEn: 'Cycling Shorts',
+    nameAr: 'شورت',
+    slug: 'cuissard',
+    parentCategoryId: '3',
+  },
+  {
+    id: '3-4',
+    nameFr: 'Chaussettes',
+    nameEn: 'Socks',
+    nameAr: 'الجوارب',
+    slug: 'chaussettes',
+    parentCategoryId: '3',
+  },
+  // Chaussures subcategories
+  {
+    id: '4-1',
+    nameFr: 'VTT',
+    nameEn: 'Mountain Bike',
+    nameAr: 'دراجة جبلية',
+    slug: 'vtt-shoes',
+    parentCategoryId: '4',
+  },
+  {
+    id: '4-2',
+    nameFr: 'Route',
+    nameEn: 'Road',
+    nameAr: 'الطريق',
+    slug: 'route-shoes',
+    parentCategoryId: '4',
+  },
+];
+
+export const products: Product[] = [
+  // Vélos - Route
+  {
+    id: '1',
+    categoryId: '1',
+    subcategoryId: '1-1',
+    nameFr: 'Vélo de Route Trek Domane',
+    slug: 'velo-route-trek-domane',
+    descriptionFr: 'Vélo de route confortable pour longues distances. Parfait pour les sorties sur route au Maroc.',
+    price: 18500,
+    stockQuantity: 3,
+    isAvailable: true,
+    isFeatured: true,
+    images: [
+      'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=800&q=80',
+    ],
+    specifications: {
+      'Cadre': 'Carbone',
+      'Groupe': 'Shimano 105',
+      'Vitesses': '22 vitesses',
+      'Freins': 'Disques hydrauliques',
+      'Roues': '700c',
+      'Poids': '8.9 kg',
+    },
+    displayOrder: 1,
+  },
+  // Vélos - VTT
+  {
+    id: '2',
+    categoryId: '1',
+    subcategoryId: '1-2',
+    nameFr: 'VTT Giant Talon 3',
+    slug: 'vtt-giant-talon-3',
+    descriptionFr: 'VTT polyvalent parfait pour les débutants et intermédiaires. Idéal pour les sentiers de Salé et ses environs.',
+    price: 12990,
+    stockQuantity: 5,
+    isAvailable: true,
+    isFeatured: true,
+    images: [
+      'https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?w=800&q=80',
+    ],
+    specifications: {
+      'Cadre': 'Aluminium ALUXX',
+      'Fourche': 'Suspension 100mm',
+      'Vitesses': '21 vitesses',
+      'Freins': 'Disques mécaniques',
+      'Roues': '27.5 pouces',
+      'Poids': '14.5 kg',
+    },
+    displayOrder: 2,
+  },
+  // Vélos - Ville
+  {
+    id: '3',
+    categoryId: '1',
+    subcategoryId: '1-4',
+    nameFr: 'Vélo Urbain Cannondale Quick',
+    slug: 'velo-urbain-cannondale-quick',
+    descriptionFr: 'Vélo urbain léger et rapide pour vos déplacements quotidiens à Salé et Rabat.',
+    price: 8900,
+    stockQuantity: 8,
+    isAvailable: true,
+    isFeatured: true,
+    images: [
+      'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=800&q=80',
+    ],
+    specifications: {
+      'Cadre': 'Aluminium',
+      'Vitesses': '8 vitesses',
+      'Freins': 'V-Brake',
+      'Roues': '700c',
+      'Poids': '11 kg',
+    },
+    displayOrder: 3,
+  },
+  // Accessoires - Pneus
+  {
+    id: '4',
+    categoryId: '2',
+    subcategoryId: '2-1',
+    nameFr: 'Pneu Continental Grand Prix 5000',
+    slug: 'pneu-continental-grand-prix-5000',
+    descriptionFr: 'Pneu route haute performance avec excellente adhérence.',
+    price: 420,
+    stockQuantity: 30,
+    isAvailable: true,
+    isFeatured: false,
+    images: [
+      'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80',
+    ],
+    specifications: {
+      'Taille': '700x25c',
+      'Type': 'Tubeless Ready',
+      'Poids': '230g',
+      'TPI': '330',
+    },
+    displayOrder: 4,
+  },
+  // Accessoires - Éclairage
+  {
+    id: '5',
+    categoryId: '2',
+    subcategoryId: '2-5',
+    nameFr: 'Éclairage LED Avant et Arrière',
+    slug: 'eclairage-led-avant-arriere',
+    descriptionFr: 'Set d\'éclairage LED puissant pour rouler en sécurité la nuit.',
+    price: 280,
+    stockQuantity: 25,
+    isAvailable: true,
+    isFeatured: true,
+    images: [
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+    ],
+    specifications: {
+      'Luminosité': '300 lumens (avant)',
+      'Autonomie': 'Jusqu\'à 10h',
+      'Recharge': 'USB',
+      'Étanche': 'IPX4',
+    },
+    displayOrder: 5,
+  },
+  // Accessoires - Électroniques
+  {
+    id: '6',
+    categoryId: '2',
+    subcategoryId: '2-4',
+    nameFr: 'Compteur GPS Garmin Edge 530',
+    slug: 'compteur-gps-garmin-edge-530',
+    descriptionFr: 'Compteur GPS avancé avec navigation et analyse de performance.',
+    price: 3200,
+    stockQuantity: 4,
+    isAvailable: true,
+    isFeatured: true,
+    images: [
+      'https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?w=800&q=80',
+    ],
+    specifications: {
+      'Écran': '2.6 pouces couleur',
+      'GPS': 'Multi-GNSS',
+      'Autonomie': '20 heures',
+      'Connectivité': 'Bluetooth, ANT+',
+    },
+    displayOrder: 6,
+  },
+];
+
+// Updated contact information
+export const WHATSAPP_NUMBER = '212631532200';
+export const PHONE_NUMBER = '+212 6 31 53 22 00';
+export const SHOP_EMAIL = 'dimaveloteam@gmail.com';
+export const SHOP_ADDRESS = 'Avenue Hassan II, Salé, Maroc';
+export const SHOP_HOURS = 'Lun-Sam: 9h-19h | Dim: 10h-18h';
