@@ -48,7 +48,11 @@ export function filterProducts(products: Product[], filters: ProductFilters): Pr
       const searchLower = filters.search.toLowerCase();
       return (
         product.nameFr.toLowerCase().includes(searchLower) ||
-        product.descriptionFr.toLowerCase().includes(searchLower)
+        product.nameEn?.toLowerCase().includes(searchLower) ||
+        product.nameAr?.toLowerCase().includes(searchLower) ||
+        product.descriptionFr.toLowerCase().includes(searchLower) ||
+        product.descriptionEn?.toLowerCase().includes(searchLower) ||
+        product.descriptionAr?.toLowerCase().includes(searchLower)
       );
     }
     return true;
@@ -60,7 +64,7 @@ export function filterProducts(products: Product[], filters: ProductFilters): Pr
  */
 export function sortProducts(products: Product[], sortOption: SortOption): Product[] {
   const sorted = [...products];
-  
+
   switch (sortOption) {
     case 'name-asc':
       return sorted.sort((a, b) => a.nameFr.localeCompare(b.nameFr));

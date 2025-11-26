@@ -48,7 +48,6 @@ const resizeImage = (file: File): Promise<Blob> => {
 };
 
 export const uploadImageToImgBB = async (file: File): Promise<string> => {
-  console.error('DEBUG: uploadImageToImgBB called for file:', file.name, 'Size:', file.size, 'Type:', file.type);
   const apiKey = import.meta.env.VITE_IMGBB_API_KEY;
 
   if (!apiKey) {
@@ -57,14 +56,10 @@ export const uploadImageToImgBB = async (file: File): Promise<string> => {
 
   try {
     // Resize image before upload
-    console.error('DEBUG: Resizing image...');
     const resizedBlob = await resizeImage(file);
-    console.error('DEBUG: Image resized. New size:', resizedBlob.size);
 
     const formData = new FormData();
     formData.append('image', resizedBlob, file.name);
-
-    console.error('DEBUG: Starting fetch to ImgBB...');
 
     // Add 30s timeout
     const controller = new AbortController();
@@ -78,10 +73,7 @@ export const uploadImageToImgBB = async (file: File): Promise<string> => {
 
     clearTimeout(timeoutId);
 
-    console.error('DEBUG: Fetch completed, status:', response.status);
-
     const data = await response.json();
-    console.error('DEBUG: ImgBB response data:', data);
 
     if (data.success) {
       return data.data.url;
@@ -89,7 +81,7 @@ export const uploadImageToImgBB = async (file: File): Promise<string> => {
 
     throw new Error(data.error?.message || 'Failed to upload image');
   } catch (error) {
-    console.error('DEBUG: Image upload error:', error);
+    console.error('Image upload error:', error);
     throw error;
   }
 };

@@ -86,16 +86,11 @@ export default function AdminPage() {
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.error('DEBUG: handleAddProduct called');
-    console.error('DEBUG: Product data:', newProduct);
-    console.error('DEBUG: Images to upload:', productImages);
-
     setIsSubmitting(true);
 
     try {
       const slug = productService.generateSlug(newProduct.nameFr);
 
-      console.error('DEBUG: Calling productService.createProduct...');
       await productService.createProduct(
         {
           nameFr: newProduct.nameFr,
@@ -117,17 +112,15 @@ export default function AdminPage() {
         },
         productImages
       );
-      console.error('DEBUG: productService.createProduct completed successfully');
 
       toast.success('Produit ajouté avec succès !');
       setIsAddProductOpen(false);
       resetForm();
       refreshProducts();
     } catch (error) {
-      console.error('DEBUG: Error in handleAddProduct:', error);
+      console.error('Error adding product:', error);
       toast.error('Erreur lors de l\'ajout du produit');
     } finally {
-      console.error('DEBUG: Setting isSubmitting to false');
       setIsSubmitting(false);
     }
   };

@@ -4,8 +4,10 @@ import { Search, X, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useProducts } from '@/hooks/useProducts';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { categories } from '@/lib/data';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const INITIAL_RESULTS_LIMIT = 5;
@@ -17,9 +19,22 @@ export function SearchBar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAllResults, setShowAllResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  // Load search history from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('searchHistory');
+    if (saved) {
+      try {
+        setSearchHistory(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to load search history:', e);
+      }
+    }
+  }, []);
 
   // Close search when clicking outside
   useEffect(() => {
@@ -77,14 +92,42 @@ export function SearchBar() {
     }
   };
 
+  // Get category name
+  const getCategoryName = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category) return '';
+
+    switch (language) {
+      case 'en': return category.nameEn;
+      case 'ar': return category.nameAr;
+      default: return category.nameFr;
+    }
+  };
+
+  // Highlight matching search terms
+  const highlightText = (text: string, query: string) => {
+    if (!query.trim() || !text) return text;
+
+    try {
+      const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
+      return parts.map((part, i) =>
+        part.toLowerCase() === query.toLowerCase()
+          ? <mark key={i} className="bg-yellow-200 px-0.5 rounded">{part}</mark>
+          : part
+      );
+    } catch (e) {
+      return text;
+    }
+  };
+
   // Filter products based on search query
   const filteredProducts = searchQuery.trim()
     ? products.filter((product) => {
-        const query = searchQuery.toLowerCase();
-        const name = getProductName(product).toLowerCase();
-        const description = getProductDescription(product).toLowerCase();
-        return name.includes(query) || description.includes(query);
-      })
+      const query = searchQuery.toLowerCase();
+      const name = getProductName(product).toLowerCase();
+      const description = getProductDescription(product).toLowerCase();
+      return name.includes(query) || description.includes(query);
+    })
     : [];
 
   const displayedResults = showAllResults
@@ -92,6 +135,14 @@ export function SearchBar() {
     : filteredProducts.slice(0, INITIAL_RESULTS_LIMIT);
 
   const hasMoreResults = filteredProducts.length > INITIAL_RESULTS_LIMIT;
+
+  // Add search to history
+  const addToHistory = (query: string) => {
+    if (!query.trim()) return;
+    const updated = [query, ...searchHistory.filter(h => h.toLowerCase() !== query.toLowerCase())].slice(0, 5);
+    setSearchHistory(updated);
+    localStorage.setItem('searchHistory', JSON.stringify(updated));
+  };
 
   const handleSearchClick = () => {
     setIsOpen(true);
@@ -105,9 +156,17 @@ export function SearchBar() {
   };
 
   const handleProductClick = () => {
+    if (searchQuery.trim()) {
+      addToHistory(searchQuery);
+    }
     setIsOpen(false);
     setSearchQuery('');
     setShowAllResults(false);
+  };
+
+  const handleHistoryClick = (query: string) => {
+    setSearchQuery(query);
+    inputRef.current?.focus();
   };
 
   return (
@@ -137,8 +196,8 @@ export function SearchBar() {
             initial={{ opacity: 0, width: 40, scale: 0.95 }}
             animate={{ opacity: 1, width: '100%', scale: 1 }}
             exit={{ opacity: 0, width: 40, scale: 0.95 }}
-            transition={{ 
-              duration: 0.3, 
+            transition={{
+              duration: 0.3,
               ease: [0.4, 0, 0.2, 1],
               width: { duration: 0.3 },
               opacity: { duration: 0.2 },
@@ -194,22 +253,22 @@ export function SearchBar() {
       <AnimatePresence>
         {isOpen && searchQuery && (
           <motion.div
-            initial={{ 
-              opacity: 0, 
+            initial={{
+              opacity: 0,
               y: -10,
               scale: 0.95
             }}
-            animate={{ 
-              opacity: 1, 
+            animate={{
+              opacity: 1,
               y: 0,
               scale: 1
             }}
-            exit={{ 
-              opacity: 0, 
+            exit={{
+              opacity: 0,
               y: -10,
               scale: 0.95
             }}
-            transition={{ 
+            transition={{
               duration: 0.3,
               ease: [0.4, 0, 0.2, 1],
               opacity: { duration: 0.2 },
@@ -217,14 +276,14 @@ export function SearchBar() {
               scale: { duration: 0.3 }
             }}
             className="absolute top-full right-0 mt-2 w-full md:w-96 max-h-[70vh] overflow-hidden z-50"
-            style={{ 
+            style={{
               transformOrigin: 'top right',
               willChange: 'transform, opacity'
             }}
           >
             <Card className="shadow-lg overflow-hidden backdrop-blur-sm bg-white/95">
               {isSearching || productsLoading ? (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.2 }}
@@ -233,7 +292,7 @@ export function SearchBar() {
                   <Loader2 className="h-6 w-6 animate-spin text-green-600" />
                 </motion.div>
               ) : filteredProducts.length === 0 ? (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, ease: 'easeOut' }}
@@ -242,7 +301,7 @@ export function SearchBar() {
                   <p className="text-sm">{t.categories?.noProducts || 'Aucun produit trouvé'}</p>
                 </motion.div>
               ) : (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.2 }}
@@ -255,8 +314,8 @@ export function SearchBar() {
                         key={product.id}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ 
-                          delay: index * 0.04, 
+                        transition={{
+                          delay: index * 0.04,
                           duration: 0.3,
                           ease: [0.4, 0, 0.2, 1]
                         }}
@@ -267,7 +326,7 @@ export function SearchBar() {
                           onClick={handleProductClick}
                           className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-200 ease-out"
                         >
-                          <motion.div 
+                          <motion.div
                             className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100"
                             whileHover={{ scale: 1.05 }}
                             transition={{ duration: 0.2 }}
@@ -280,14 +339,19 @@ export function SearchBar() {
                           </motion.div>
                           <div className="flex-1 min-w-0">
                             <h4 className="font-semibold text-sm text-gray-900 truncate">
-                              {getProductName(product)}
+                              {highlightText(getProductName(product), searchQuery)}
                             </h4>
                             <p className="text-xs text-gray-500 line-clamp-1">
-                              {getProductDescription(product)}
+                              {highlightText(getProductDescription(product), searchQuery)}
                             </p>
-                            <p className="text-sm font-bold text-green-600 mt-1">
-                              {product.price.toLocaleString()} DH
-                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <p className="text-sm font-bold text-green-600">
+                                {product.price.toLocaleString()} DH
+                              </p>
+                              <Badge variant="outline" className="text-xs">
+                                {getCategoryName(product.categoryId)}
+                              </Badge>
+                            </div>
                           </div>
                         </Link>
                       </motion.div>
@@ -300,7 +364,7 @@ export function SearchBar() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        transition={{ 
+                        transition={{
                           duration: 0.3,
                           ease: [0.4, 0, 0.2, 1],
                           height: { duration: 0.3 },
@@ -325,7 +389,7 @@ export function SearchBar() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        transition={{ 
+                        transition={{
                           duration: 0.3,
                           ease: [0.4, 0, 0.2, 1],
                           height: { duration: 0.3 },
