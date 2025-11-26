@@ -28,8 +28,8 @@ export default function Index() {
     );
   }
 
-  // Get featured products (first 6)
-  const featuredProducts = products.slice(0, 6);
+  // Get featured products (filter by isFeatured flag, max 6)
+  const featuredProducts = products.filter(p => p.isFeatured).slice(0, 6);
 
   // Get category name based on language
   const getCategoryName = (category: typeof categories[0]) => {
@@ -81,7 +81,7 @@ export default function Index() {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
       <Header />
-      
+
       <main className="flex-1 w-full">
         {/* Hero Section */}
         <section className="relative bg-green-600 text-white py-12 md:py-20 overflow-hidden">
@@ -122,7 +122,7 @@ export default function Index() {
                 {t.home.categories.subtitle}
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {categories.map((category) => (
                 <Link
@@ -160,7 +160,7 @@ export default function Index() {
                 {t.home.featured.subtitle}
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
               {featuredProducts.map((product) => (
                 <Link
@@ -214,7 +214,7 @@ export default function Index() {
                 {t.home.whyChoose.title}
               </h2>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
               <div className="text-center px-4">
                 <div className="w-14 h-14 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -223,7 +223,7 @@ export default function Index() {
                 <h3 className="font-semibold text-lg md:text-xl mb-2 break-words">{t.home.whyChoose.quality.title}</h3>
                 <p className="text-gray-600 text-sm md:text-base break-words">{t.home.whyChoose.quality.description}</p>
               </div>
-              
+
               <div className="text-center px-4">
                 <div className="w-14 h-14 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Wrench className="h-7 w-7 md:h-8 md:w-8 text-green-600" />
@@ -231,7 +231,7 @@ export default function Index() {
                 <h3 className="font-semibold text-lg md:text-xl mb-2 break-words">{t.home.whyChoose.service.title}</h3>
                 <p className="text-gray-600 text-sm md:text-base break-words">{t.home.whyChoose.service.description}</p>
               </div>
-              
+
               <div className="text-center px-4">
                 <div className="w-14 h-14 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Phone className="h-7 w-7 md:h-8 md:w-8 text-green-600" />
