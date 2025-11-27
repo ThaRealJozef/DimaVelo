@@ -17,7 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { categories, subcategories } from '@/lib/data';
 import { formatPrice } from '@/lib/utils-bike';
-import { Package, Calendar, Plus, Edit, Trash2, Loader2, LogOut } from 'lucide-react';
+import { Package, Calendar, Plus, Edit, Trash2, Loader2, LogOut, CheckSquare, Square, Trash, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProducts } from '@/hooks/useProducts';
 import { useBookings } from '@/hooks/useBookings';
@@ -37,6 +37,10 @@ export default function AdminPage() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Bulk Selection State
+  const [selectedProductIds, setSelectedProductIds] = useState<Set<string>>(new Set());
+  const [isBulkDeleteOpen, setIsBulkDeleteOpen] = useState(false);
 
   const { products, loading: productsLoading, refreshProducts } = useProducts();
   const { bookings, loading: bookingsLoading, refreshBookings } = useBookings();
@@ -239,16 +243,68 @@ export default function AdminPage() {
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case 'pending':
-        return 'secondary';
-      case 'confirmed':
-        return 'default';
-      case 'completed':
-        return 'default';
-      case 'cancelled':
-        return 'destructive';
-      default:
-        return 'secondary';
+      case 'confirmed': return 'default'; // green-600
+      case 'completed': return 'secondary'; // gray-500
+      case 'cancelled': return 'destructive'; // red-600
+      default: return 'outline'; // yellow-500
+    }
+  };
+
+  // Bulk Actions Handlers
+  const toggleSelectAll = () => {
+    if (selectedProductIds.size === products.length) {
+      setSelectedProductIds(new Set());
+    } else {
+      setSelectedProductIds(new Set(products.map(p => p.id)));
+    }
+  };
+
+  const toggleSelectProduct = (productId: string) => {
+    const newSelected = new Set(selectedProductIds);
+    if (newSelected.has(productId)) {
+      newSelected.delete(productId);
+    } else {
+      newSelected.add(productId);
+    }
+    setSelectedProductIds(newSelected);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedProductIds.size === 0) return;
+    setIsSubmitting(true);
+    try {
+      await Promise.all(Array.from(selectedProductIds).map(id => productService.deleteProduct(id)));
+      toast.success(`${selectedProductIds.size} produits supprimés`);
+      setSelectedProductIds(new Set());
+      setIsBulkDeleteOpen(false);
+      refreshProducts();
+    } catch (error) {
+      toast.error('Erreur lors de la suppression');
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleBulkToggleFeatured = async () => {
+    if (selectedProductIds.size === 0) return;
+    setIsSubmitting(true);
+    try {
+      const selectedProducts = products.filter(p => selectedProductIds.has(p.id));
+      const allFeatured = selectedProducts.every(p => p.isFeatured);
+      const newState = !allFeatured;
+
+      await Promise.all(Array.from(selectedProductIds).map(id =>
+        productService.updateProduct(id, { isFeatured: newState })
+      ));
+
+      toast.success(`Produits ${newState ? 'mis en vedette' : 'retirés des vedettes'}`);
+      refreshProducts();
+    } catch (error) {
+      toast.error('Erreur lors de la mise à jour');
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -361,7 +417,21 @@ export default function AdminPage() {
             {/* Produits */}
             <TabsContent value="products" className="space-y-6">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Gestion des Produits</h2>
+                <div className="flex items-center gap-4">
+                  <h2 className="text-2xl font-bold">Gestion des Produits</h2>
+                  <div className="flex items-center space-x-2 bg-white px-3 py-1.5 rounded-md border shadow-sm">
+                    <input
+                      type="checkbox"
+                      id="selectAll"
+                      checked={products.length > 0 && selectedProductIds.size === products.length}
+                      onChange={toggleSelectAll}
+                      className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                    />
+                    <Label htmlFor="selectAll" className="text-sm cursor-pointer">
+                      Tout sélectionner ({selectedProductIds.size})
+                    </Label>
+                  </div>
+                </div>
                 <Dialog open={isAddProductOpen} onOpenChange={setIsAddProductOpen}>
                   <DialogTrigger asChild>
                     <Button>
@@ -548,8 +618,16 @@ export default function AdminPage() {
               ) : (
                 <div className="grid grid-cols-1 gap-4">
                   {products.map((product) => (
-                    <Card key={product.id}>
+                    <Card key={product.id} className={selectedProductIds.has(product.id) ? 'border-green-500 ring-1 ring-green-500' : ''}>
                       <CardContent className="flex items-center gap-4 p-4">
+                        <div className="flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedProductIds.has(product.id)}
+                            onChange={() => toggleSelectProduct(product.id)}
+                            className="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500 cursor-pointer"
+                          />
+                        </div>
                         {product.images && product.images[0] && (
                           <img
                             src={product.images[0]}
@@ -661,6 +739,42 @@ export default function AdminPage() {
                 </div>
               )}
             </TabsContent>
+
+            {/* Bulk Actions Bar */}
+            {selectedProductIds.size > 0 && (
+              <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border shadow-lg rounded-full px-6 py-3 flex items-center gap-4 z-50 animate-in slide-in-from-bottom-5">
+                <span className="font-medium text-sm text-gray-600">
+                  {selectedProductIds.size} sélectionné(s)
+                </span>
+                <div className="h-4 w-px bg-gray-200" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleBulkToggleFeatured}
+                  className="text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50"
+                >
+                  <Star className="mr-2 h-4 w-4" />
+                  Mettre en vedette
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsBulkDeleteOpen(true)}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  Supprimer
+                </Button>
+                <div className="h-4 w-px bg-gray-200" />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedProductIds(new Set())}
+                >
+                  Annuler
+                </Button>
+              </div>
+            )}
           </Tabs>
         </div>
       </main>
@@ -870,9 +984,34 @@ export default function AdminPage() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog >
+      </AlertDialog>
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <AlertDialog open={isBulkDeleteOpen} onOpenChange={setIsBulkDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Supprimer {selectedProductIds.size} produits ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action est irréversible. Les produits sélectionnés et leurs images seront définitivement supprimés.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-700">
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Suppression...
+                </>
+              ) : (
+                'Supprimer définitivement'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Footer />
-    </div >
+    </div>
   );
 }
