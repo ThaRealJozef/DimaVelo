@@ -25,6 +25,8 @@ import { productService } from '@/services/productService';
 import { bookingService } from '@/services/bookingService';
 import { authService } from '@/services/authService';
 import { Product } from '@/lib/types';
+import { ImagePreviewGrid } from '@/components/ImagePreviewGrid';
+import { ExistingImageGrid } from '@/components/ExistingImageGrid';
 
 export default function AdminPage() {
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ export default function AdminPage() {
   const [isEditProductOpen, setIsEditProductOpen] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { products, loading: productsLoading, refreshProducts } = useProducts();
@@ -148,7 +151,8 @@ export default function AdminPage() {
           isFeatured: editingProduct.isFeatured,
           isAvailable: editingProduct.stockQuantity > 0,
         },
-        productImages
+        productImages,
+        existingImages // Pass the ordered list of existing images
       );
 
       toast.success('Produit modifié avec succès !');
@@ -206,8 +210,30 @@ export default function AdminPage() {
     setProductImages([]);
   };
 
+  // Handle image removal
+  const handleRemoveImage = (index: number) => {
+    setProductImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Handle image reordering
+  const handleReorderImages = (newOrder: File[]) => {
+    setProductImages(newOrder);
+  };
+
+  // Handle existing image removal (for edit mode)
+  const handleRemoveExistingImage = (index: number) => {
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Handle existing image reordering (for edit mode)
+  const handleReorderExistingImages = (newOrder: string[]) => {
+    setExistingImages(newOrder);
+  };
+
   const openEditDialog = (product: Product) => {
     setEditingProduct(product);
+    setExistingImages(product.images || []);
+    setProductImages([]); // Reset new images
     setIsEditProductOpen(true);
   };
 
@@ -492,6 +518,13 @@ export default function AdminPage() {
                           onChange={(e) => setProductImages(Array.from(e.target.files || []))}
                         />
                         <p className="text-xs text-gray-500 mt-1">Vous pouvez sélectionner plusieurs images</p>
+
+                        {/* Image Preview Grid with Drag-and-Drop */}
+                        <ImagePreviewGrid
+                          images={productImages}
+                          onReorder={handleReorderImages}
+                          onRemove={handleRemoveImage}
+                        />
                       </div>
                       <Button type="submit" className="w-full" disabled={isSubmitting}>
                         {isSubmitting ? (
@@ -680,8 +713,8 @@ export default function AdminPage() {
                   onValueChange={(value) => setEditingProduct({ ...editingProduct, categoryId: value, subcategoryId: '' })}
                   required
                 >
-                  <SelectTrigger id="editCategory">
-                    <SelectValue />
+                  <SelectTrigger>
+                    <SelectValue placeholder="Sélectionner une catégorie" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((cat) => (
@@ -690,6 +723,9 @@ export default function AdminPage() {
                   </SelectContent>
                 </Select>
               </div>
+
+
+
               {editingProduct.categoryId && getSubcategoriesForCategory(editingProduct.categoryId).length > 0 && (
                 <div>
                   <Label htmlFor="editSubcategory">Sous-catégorie *</Label>
@@ -769,15 +805,39 @@ export default function AdminPage() {
                 />
                 <Label htmlFor="editIsFeatured">Produit vedette</Label>
               </div>
-              <div>
-                <Label htmlFor="editImages">Ajouter de nouvelles images</Label>
-                <Input
-                  id="editImages"
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={(e) => setProductImages(Array.from(e.target.files || []))}
+              {/* Image Management Section */}
+              <div className="space-y-4 border-t pt-4 mt-4">
+                <h3 className="font-medium">Gestion des Images</h3>
+
+                {/* Existing Images Grid */}
+                <ExistingImageGrid
+                  images={existingImages}
+                  onReorder={handleReorderExistingImages}
+                  onRemove={handleRemoveExistingImage}
                 />
+
+                {/* New Image Upload */}
+                <div>
+                  <Label htmlFor="editImages">Ajouter de nouvelles images</Label>
+                  <Input
+                    id="editImages"
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={(e) => setProductImages(Array.from(e.target.files || []))}
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Les nouvelles images seront ajoutées après les images existantes
+                  </p>
+
+                  {/* New Images Preview Grid */}
+                  <ImagePreviewGrid
+                    images={productImages}
+                    onReorder={handleReorderImages}
+                    onRemove={handleRemoveImage}
+                  />
+                </div>
               </div>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
@@ -792,7 +852,7 @@ export default function AdminPage() {
             </form>
           )}
         </DialogContent>
-      </Dialog>
+      </Dialog >
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteProductId} onOpenChange={() => setDeleteProductId(null)}>
@@ -810,9 +870,9 @@ export default function AdminPage() {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog >
 
       <Footer />
-    </div>
+    </div >
   );
 }

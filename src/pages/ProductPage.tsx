@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, MessageCircle } from 'lucide-react';
 import { generateWhatsAppLink } from '@/lib/utils-bike';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ProductImageGallery } from '@/components/ProductImageGallery';
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -54,26 +55,26 @@ export default function ProductPage() {
       name: language === 'ar' ? 'nameAr' : language === 'en' ? 'nameEn' : 'nameFr',
       description: language === 'ar' ? 'descriptionAr' : language === 'en' ? 'descriptionEn' : 'descriptionFr',
     };
-    
+
     const field = fieldMap[fieldBase];
     const value = product[field];
-    
+
     // Fallback to French if the localized field is empty
     if (!value || value === '') {
       return product[`${fieldBase}Fr` as keyof typeof product] as string || '';
     }
-    
+
     return value as string;
   };
 
   const productName = getLocalizedField('name');
   const productDescription = getLocalizedField('description');
-  const whatsappLink = generateWhatsAppLink(productName, product.price);
+  const whatsappLink = generateWhatsAppLink(productName, product.price, product.id);
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
       <Header />
-      
+
       <main className="flex-1 py-8 overflow-hidden">
         <div className="container px-4">
           <Button asChild variant="ghost" className="mb-4 md:mb-6">
@@ -84,19 +85,16 @@ export default function ProductPage() {
           </Button>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-            {/* Product Image */}
-            <div className="aspect-square overflow-hidden rounded-lg bg-gray-100 w-full">
-              <img
-                src={product.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
-                alt={productName}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {/* Product Image Gallery */}
+            <ProductImageGallery
+              images={product.images || []}
+              productName={productName}
+            />
 
             {/* Product Details */}
             <div className="w-full overflow-hidden">
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 break-words">{productName}</h1>
-              
+
               <div className="flex items-center gap-2 mb-4 md:mb-6">
                 <Badge variant={product.isAvailable ? 'default' : 'secondary'}>
                   {product.isAvailable ? t.product.inStock : t.product.outOfStock}

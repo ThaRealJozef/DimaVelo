@@ -26,7 +26,7 @@ export const productService = {
     try {
       const q = query(collection(db, PRODUCTS_COLLECTION), orderBy('displayOrder', 'asc'));
       const querySnapshot = await getDocs(q);
-      
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -48,7 +48,7 @@ export const productService = {
         orderBy('displayOrder', 'asc')
       );
       const querySnapshot = await getDocs(q);
-      
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -70,7 +70,7 @@ export const productService = {
         orderBy('displayOrder', 'asc')
       );
       const querySnapshot = await getDocs(q);
-      
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -88,14 +88,14 @@ export const productService = {
     try {
       const docRef = doc(db, PRODUCTS_COLLECTION, id);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         return {
           id: docSnap.id,
           ...docSnap.data(),
         } as Product;
       }
-      
+
       return null;
     } catch (error) {
       console.error('Error getting product:', error);
@@ -110,7 +110,7 @@ export const productService = {
     try {
       const q = query(collection(db, PRODUCTS_COLLECTION), where('slug', '==', slug));
       const querySnapshot = await getDocs(q);
-      
+
       if (!querySnapshot.empty) {
         const doc = querySnapshot.docs[0];
         return {
@@ -118,7 +118,7 @@ export const productService = {
           ...doc.data(),
         } as Product;
       }
-      
+
       return null;
     } catch (error) {
       console.error('Error getting product by slug:', error);
@@ -132,7 +132,7 @@ export const productService = {
   async createProduct(productData: Omit<Product, 'id'>, imageFiles?: File[]): Promise<string> {
     try {
       let imageUrls: string[] = [];
-      
+
       // Upload images if provided
       if (imageFiles && imageFiles.length > 0) {
         imageUrls = await imageService.uploadMultipleImages(imageFiles, 'products');
@@ -160,31 +160,29 @@ export const productService = {
     id: string,
     productData: Partial<Product>,
     newImageFiles?: File[],
-    imagesToDelete?: string[]
+    existingImages?: string[]
   ): Promise<void> {
     try {
-      // Delete old images if specified
-      if (imagesToDelete && imagesToDelete.length > 0) {
-        await imageService.deleteMultipleImages(imagesToDelete);
-      }
-
       // Upload new images if provided
       let newImageUrls: string[] = [];
       if (newImageFiles && newImageFiles.length > 0) {
         newImageUrls = await imageService.uploadMultipleImages(newImageFiles, 'products');
       }
 
-      // Merge existing images with new images
-      const currentProduct = await this.getProductById(id);
-      const existingImages = currentProduct?.images || [];
-      const filteredExistingImages = existingImages.filter(
-        (img) => !imagesToDelete?.includes(img)
-      );
-      const updatedImages = [...filteredExistingImages, ...newImageUrls];
+      // Combine ordered existing images with new images
+      // If existingImages is not provided, fetch current ones (fallback)
+      let finalImages: string[] = [];
+
+      if (existingImages !== undefined) {
+        finalImages = [...existingImages, ...newImageUrls];
+      } else {
+        const currentProduct = await this.getProductById(id);
+        finalImages = [...(currentProduct?.images || []), ...newImageUrls];
+      }
 
       const updateData = {
         ...productData,
-        images: updatedImages,
+        images: finalImages,
         updatedAt: Timestamp.now(),
       };
 
@@ -203,7 +201,7 @@ export const productService = {
     try {
       // Get product to delete its images
       const product = await this.getProductById(id);
-      
+
       if (product && product.images && product.images.length > 0) {
         await imageService.deleteMultipleImages(product.images);
       }
