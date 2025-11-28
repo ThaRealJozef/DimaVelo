@@ -19,9 +19,6 @@ import { imageService } from './imageService';
 const PRODUCTS_COLLECTION = 'products';
 
 export const productService = {
-  /**
-   * Get all products
-   */
   async getAllProducts(): Promise<Product[]> {
     try {
       const q = query(collection(db, PRODUCTS_COLLECTION), orderBy('displayOrder', 'asc'));
@@ -37,9 +34,6 @@ export const productService = {
     }
   },
 
-  /**
-   * Get products by category
-   */
   async getProductsByCategory(categoryId: string): Promise<Product[]> {
     try {
       const q = query(
@@ -59,9 +53,6 @@ export const productService = {
     }
   },
 
-  /**
-   * Get featured products
-   */
   async getFeaturedProducts(): Promise<Product[]> {
     try {
       const q = query(
@@ -81,9 +72,6 @@ export const productService = {
     }
   },
 
-  /**
-   * Get a single product by ID
-   */
   async getProductById(id: string): Promise<Product | null> {
     try {
       const docRef = doc(db, PRODUCTS_COLLECTION, id);
@@ -103,9 +91,6 @@ export const productService = {
     }
   },
 
-  /**
-   * Get a product by slug
-   */
   async getProductBySlug(slug: string): Promise<Product | null> {
     try {
       const q = query(collection(db, PRODUCTS_COLLECTION), where('slug', '==', slug));
@@ -126,9 +111,6 @@ export const productService = {
     }
   },
 
-  /**
-   * Create a new product
-   */
   async createProduct(productData: Omit<Product, 'id'>, imageFiles?: File[]): Promise<string> {
     try {
       let imageUrls: string[] = [];
@@ -153,9 +135,6 @@ export const productService = {
     }
   },
 
-  /**
-   * Update an existing product
-   */
   async updateProduct(
     id: string,
     productData: Partial<Product>,
@@ -194,9 +173,6 @@ export const productService = {
     }
   },
 
-  /**
-   * Delete a product
-   */
   async deleteProduct(id: string): Promise<void> {
     try {
       // Get product to delete its images
@@ -214,9 +190,6 @@ export const productService = {
     }
   },
 
-  /**
-   * Update product stock
-   */
   async updateStock(id: string, stockQuantity: number): Promise<void> {
     try {
       const docRef = doc(db, PRODUCTS_COLLECTION, id);
@@ -231,9 +204,6 @@ export const productService = {
     }
   },
 
-  /**
-   * Generate a URL-friendly slug from a string
-   */
   generateSlug(text: string): string {
     return text
       .toLowerCase()
@@ -243,9 +213,6 @@ export const productService = {
       .replace(/^-+|-+$/g, '');
   },
 
-  /**
-   * Increment view count for a product
-   */
   async incrementViewCount(productId: string): Promise<void> {
     try {
       const docRef = doc(db, PRODUCTS_COLLECTION, productId);

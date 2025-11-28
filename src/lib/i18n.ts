@@ -44,7 +44,7 @@ export const translations = {
       hero: {
         title: 'Bienvenue chez Dima Vélo',
         subtitle: 'Votre magasin de vélos de confiance à Salé',
-        cta: 'Découvrir nos vélos',
+        cta: 'Découvrez nos produits',
         services: 'Nos services',
       },
       categories: {
@@ -221,7 +221,7 @@ export const translations = {
       hero: {
         title: 'Welcome to Dima Vélo',
         subtitle: 'Your trusted bike shop in Salé',
-        cta: 'Discover our bikes',
+        cta: 'Discover our products',
         services: 'Our services',
       },
       categories: {
@@ -398,7 +398,7 @@ export const translations = {
       hero: {
         title: 'مرحبا بكم في ديما فيلو',
         subtitle: 'متجر الدراجات الموثوق في سلا',
-        cta: 'اكتشف دراجاتنا',
+        cta: 'اكتشف منتجاتنا',
         services: 'خدماتنا',
       },
       categories: {

@@ -1,5 +1,5 @@
 import { useState, useRef, MouseEvent } from 'react';
-import { useIsMobile } from '@/hooks/useIsMobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ImageZoomProps {

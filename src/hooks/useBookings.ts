@@ -1,31 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Booking, bookingService } from '@/services/bookingService';
+import { useCallback } from 'react';
+import { bookingService } from '@/services/bookingService';
+import { useDataFetcher } from './useDataFetcher';
 
 export function useBookings() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const fetchBookings = useCallback(() => bookingService.getAllBookings(), []);
+  const { data, loading, error, refresh } = useDataFetcher(fetchBookings);
 
-  useEffect(() => {
-    loadBookings();
-  }, []);
-
-  const loadBookings = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await bookingService.getAllBookings();
-      setBookings(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load bookings');
-    } finally {
-      setLoading(false);
-    }
+  return {
+    bookings: data || [],
+    loading,
+    error,
+    refreshBookings: refresh
   };
-
-  const refreshBookings = () => {
-    loadBookings();
-  };
-
-  return { bookings, loading, error, refreshBookings };
 }

@@ -18,10 +18,6 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firestore
 export const db = getFirestore(app);
 
-// Initialize Storage
-// Initialize Storage - DISABLED (Using ImgBB)
-// export const storage = getStorage(app);
-
 // Initialize Auth
 export const auth = getAuth(app);
 

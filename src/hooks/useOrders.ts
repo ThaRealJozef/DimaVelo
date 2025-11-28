@@ -1,31 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Order, orderService } from '@/services/orderService';
+import { useCallback } from 'react';
+import { orderService } from '@/services/orderService';
+import { useDataFetcher } from './useDataFetcher';
 
 export function useOrders() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const fetchOrders = useCallback(() => orderService.getAllOrders(), []);
+  const { data, loading, error, refresh } = useDataFetcher(fetchOrders);
 
-  useEffect(() => {
-    loadOrders();
-  }, []);
-
-  const loadOrders = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await orderService.getAllOrders();
-      setOrders(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load orders');
-    } finally {
-      setLoading(false);
-    }
+  return {
+    orders: data || [],
+    loading,
+    error,
+    refreshOrders: refresh
   };
-
-  const refreshOrders = () => {
-    loadOrders();
-  };
-
-  return { orders, loading, error, refreshOrders };
 }

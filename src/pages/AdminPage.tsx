@@ -17,7 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { categories, subcategories } from '@/lib/data';
 import { formatPrice } from '@/lib/utils-bike';
-import { Package, Calendar, Plus, Edit, Trash2, Loader2, LogOut, CheckSquare, Square, Trash, Star } from 'lucide-react';
+import { Package, Calendar, Plus, Edit, Trash2, Loader2, LogOut, Trash, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import { useProducts } from '@/hooks/useProducts';
 import { useBookings } from '@/hooks/useBookings';
@@ -27,6 +27,44 @@ import { authService } from '@/services/authService';
 import { Product } from '@/lib/types';
 import { ImagePreviewGrid } from '@/components/ImagePreviewGrid';
 import { ExistingImageGrid } from '@/components/ExistingImageGrid';
+
+// Helper to prepare product data for Firestore
+const prepareProductData = (data: any, isNew: boolean, displayOrder?: number, slug?: string) => {
+  const productData: any = {
+    nameFr: data.nameFr,
+    nameEn: data.nameEn || data.nameFr,
+    nameAr: data.nameAr || data.nameFr,
+    categoryId: data.categoryId,
+    price: typeof data.price === 'string' ? parseFloat(data.price) : data.price,
+    stockQuantity: typeof data.stockQuantity === 'string' ? parseInt(data.stockQuantity) : data.stockQuantity,
+    descriptionFr: data.descriptionFr,
+    descriptionEn: data.descriptionEn || data.descriptionFr,
+    descriptionAr: data.descriptionAr || data.nameFr,
+    isFeatured: data.isFeatured,
+    isAvailable: (typeof data.stockQuantity === 'string' ? parseInt(data.stockQuantity) : data.stockQuantity) > 0,
+  };
+
+  if (isNew) {
+    productData.slug = slug;
+    productData.images = [];
+    productData.specifications = {};
+    productData.displayOrder = displayOrder;
+  }
+
+  if (data.subcategoryId) {
+    productData.subcategoryId = data.subcategoryId;
+  }
+
+  if (data.isFeatured && data.originalPrice) {
+    productData.originalPrice = typeof data.originalPrice === 'string' ? parseFloat(data.originalPrice) : data.originalPrice;
+  }
+
+  if (data.isFeatured && data.discountedPrice) {
+    productData.discountedPrice = typeof data.discountedPrice === 'string' ? parseFloat(data.discountedPrice) : data.discountedPrice;
+  }
+
+  return productData;
+};
 
 export default function AdminPage() {
   const navigate = useNavigate();
@@ -100,35 +138,7 @@ export default function AdminPage() {
     try {
       const slug = productService.generateSlug(newProduct.nameFr);
 
-      const productData: any = {
-        nameFr: newProduct.nameFr,
-        nameEn: newProduct.nameEn || newProduct.nameFr,
-        nameAr: newProduct.nameAr || newProduct.nameFr,
-        slug,
-        categoryId: newProduct.categoryId,
-        price: parseFloat(newProduct.price),
-        stockQuantity: parseInt(newProduct.stockQuantity),
-        descriptionFr: newProduct.descriptionFr,
-        descriptionEn: newProduct.descriptionEn || newProduct.descriptionFr,
-        descriptionAr: newProduct.descriptionAr || newProduct.nameFr,
-        images: [],
-        specifications: {},
-        isAvailable: parseInt(newProduct.stockQuantity) > 0,
-        isFeatured: newProduct.isFeatured,
-        displayOrder: products.length,
-      };
-
-      if (newProduct.subcategoryId) {
-        productData.subcategoryId = newProduct.subcategoryId;
-      }
-
-      if (newProduct.isFeatured && newProduct.originalPrice) {
-        productData.originalPrice = parseFloat(newProduct.originalPrice);
-      }
-
-      if (newProduct.isFeatured && newProduct.discountedPrice) {
-        productData.discountedPrice = parseFloat(newProduct.discountedPrice);
-      }
+      const productData = prepareProductData(newProduct, true, products.length, slug);
 
       await productService.createProduct(productData, productImages);
 
@@ -151,31 +161,7 @@ export default function AdminPage() {
     setIsSubmitting(true);
 
     try {
-      const productData: any = {
-        nameFr: editingProduct.nameFr,
-        nameEn: editingProduct.nameEn,
-        nameAr: editingProduct.nameAr,
-        categoryId: editingProduct.categoryId,
-        price: editingProduct.price,
-        stockQuantity: editingProduct.stockQuantity,
-        descriptionFr: editingProduct.descriptionFr,
-        descriptionEn: editingProduct.descriptionEn,
-        descriptionAr: editingProduct.descriptionAr,
-        isFeatured: editingProduct.isFeatured,
-        isAvailable: editingProduct.stockQuantity > 0,
-      };
-
-      if (editingProduct.subcategoryId) {
-        productData.subcategoryId = editingProduct.subcategoryId;
-      }
-
-      if (editingProduct.isFeatured && editingProduct.originalPrice) {
-        productData.originalPrice = editingProduct.originalPrice;
-      }
-
-      if (editingProduct.isFeatured && editingProduct.discountedPrice) {
-        productData.discountedPrice = editingProduct.discountedPrice;
-      }
+      const productData = prepareProductData(editingProduct, false);
 
       await productService.updateProduct(
         editingProduct.id,
