@@ -100,29 +100,37 @@ export default function AdminPage() {
     try {
       const slug = productService.generateSlug(newProduct.nameFr);
 
-      await productService.createProduct(
-        {
-          nameFr: newProduct.nameFr,
-          nameEn: newProduct.nameEn || newProduct.nameFr,
-          nameAr: newProduct.nameAr || newProduct.nameFr,
-          slug,
-          categoryId: newProduct.categoryId,
-          subcategoryId: newProduct.subcategoryId || undefined,
-          price: parseFloat(newProduct.price),
-          stockQuantity: parseInt(newProduct.stockQuantity),
-          descriptionFr: newProduct.descriptionFr,
-          descriptionEn: newProduct.descriptionEn || newProduct.descriptionFr,
-          descriptionAr: newProduct.descriptionAr || newProduct.nameFr,
-          images: [],
-          specifications: {},
-          isAvailable: parseInt(newProduct.stockQuantity) > 0,
-          isFeatured: newProduct.isFeatured,
-          originalPrice: newProduct.isFeatured && newProduct.originalPrice ? parseFloat(newProduct.originalPrice) : undefined,
-          discountedPrice: newProduct.isFeatured && newProduct.discountedPrice ? parseFloat(newProduct.discountedPrice) : undefined,
-          displayOrder: products.length,
-        },
-        productImages
-      );
+      const productData: any = {
+        nameFr: newProduct.nameFr,
+        nameEn: newProduct.nameEn || newProduct.nameFr,
+        nameAr: newProduct.nameAr || newProduct.nameFr,
+        slug,
+        categoryId: newProduct.categoryId,
+        price: parseFloat(newProduct.price),
+        stockQuantity: parseInt(newProduct.stockQuantity),
+        descriptionFr: newProduct.descriptionFr,
+        descriptionEn: newProduct.descriptionEn || newProduct.descriptionFr,
+        descriptionAr: newProduct.descriptionAr || newProduct.nameFr,
+        images: [],
+        specifications: {},
+        isAvailable: parseInt(newProduct.stockQuantity) > 0,
+        isFeatured: newProduct.isFeatured,
+        displayOrder: products.length,
+      };
+
+      if (newProduct.subcategoryId) {
+        productData.subcategoryId = newProduct.subcategoryId;
+      }
+
+      if (newProduct.isFeatured && newProduct.originalPrice) {
+        productData.originalPrice = parseFloat(newProduct.originalPrice);
+      }
+
+      if (newProduct.isFeatured && newProduct.discountedPrice) {
+        productData.discountedPrice = parseFloat(newProduct.discountedPrice);
+      }
+
+      await productService.createProduct(productData, productImages);
 
       toast.success('Produit ajouté avec succès !');
       setIsAddProductOpen(false);
@@ -143,24 +151,35 @@ export default function AdminPage() {
     setIsSubmitting(true);
 
     try {
+      const productData: any = {
+        nameFr: editingProduct.nameFr,
+        nameEn: editingProduct.nameEn,
+        nameAr: editingProduct.nameAr,
+        categoryId: editingProduct.categoryId,
+        price: editingProduct.price,
+        stockQuantity: editingProduct.stockQuantity,
+        descriptionFr: editingProduct.descriptionFr,
+        descriptionEn: editingProduct.descriptionEn,
+        descriptionAr: editingProduct.descriptionAr,
+        isFeatured: editingProduct.isFeatured,
+        isAvailable: editingProduct.stockQuantity > 0,
+      };
+
+      if (editingProduct.subcategoryId) {
+        productData.subcategoryId = editingProduct.subcategoryId;
+      }
+
+      if (editingProduct.isFeatured && editingProduct.originalPrice) {
+        productData.originalPrice = editingProduct.originalPrice;
+      }
+
+      if (editingProduct.isFeatured && editingProduct.discountedPrice) {
+        productData.discountedPrice = editingProduct.discountedPrice;
+      }
+
       await productService.updateProduct(
         editingProduct.id,
-        {
-          nameFr: editingProduct.nameFr,
-          nameEn: editingProduct.nameEn,
-          nameAr: editingProduct.nameAr,
-          categoryId: editingProduct.categoryId,
-          subcategoryId: editingProduct.subcategoryId || undefined,
-          price: editingProduct.price,
-          stockQuantity: editingProduct.stockQuantity,
-          descriptionFr: editingProduct.descriptionFr,
-          descriptionEn: editingProduct.descriptionEn,
-          descriptionAr: editingProduct.descriptionAr,
-          isFeatured: editingProduct.isFeatured,
-          originalPrice: editingProduct.isFeatured ? editingProduct.originalPrice : undefined,
-          discountedPrice: editingProduct.isFeatured ? editingProduct.discountedPrice : undefined,
-          isAvailable: editingProduct.stockQuantity > 0,
-        },
+        productData,
         productImages,
         existingImages // Pass the ordered list of existing images
       );
@@ -496,7 +515,7 @@ export default function AdminPage() {
                             <SelectValue placeholder="Sélectionnez une catégorie" />
                           </SelectTrigger>
                           <SelectContent>
-                            {categories.map((cat) => (
+                            {categories.filter(cat => cat.slug !== 'promotions').map((cat) => (
                               <SelectItem key={cat.id} value={cat.id}>{cat.nameFr}</SelectItem>
                             ))}
                           </SelectContent>

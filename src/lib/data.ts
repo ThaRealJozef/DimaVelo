@@ -3,6 +3,18 @@ import { Product, Category, Subcategory } from './types';
 
 export const categories: Category[] = [
   {
+    id: '6',
+    nameFr: 'Promotions',
+    nameEn: 'Promotions',
+    nameAr: 'العروض الترويجية',
+    slug: 'promotions',
+    descriptionFr: 'Produits en promotion avec réductions',
+    descriptionEn: 'Discounted products on sale',
+    descriptionAr: 'المنتجات المخفضة',
+    imageUrl: '/assets/category-promotions.jpg',
+    displayOrder: 0,
+  },
+  {
     id: '1',
     nameFr: 'Vélos',
     nameEn: 'Bikes',

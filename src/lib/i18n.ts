@@ -37,6 +37,7 @@ export const translations = {
       showMore: 'Afficher plus',
       showLess: 'Afficher moins',
       more: 'de plus',
+      page: 'Page',
     },
     // Home
     home: {
@@ -52,7 +53,7 @@ export const translations = {
       },
       featured: {
         title: 'Produits en Vedette',
-        subtitle: 'Découvrez notre sélection de vélos',
+        subtitle: 'Découvrez nos produits les plus vendus',
       },
       whyChoose: {
         title: 'Pourquoi Nous Choisir',
@@ -98,6 +99,13 @@ export const translations = {
       specifications: 'Spécifications',
       contactWhatsApp: 'Commander via WhatsApp',
       moreInfo: 'Plus d\'informations',
+    },
+    // Promotions
+    promotions: {
+      title: 'Promotions',
+      subtitle: 'Découvrez nos produits en promotion avec des prix réduits !',
+      noProducts: 'Aucune promotion disponible',
+      checkBack: 'Revenez bientôt pour découvrir nos nouvelles offres !',
     },
     // Services
     services: {
@@ -206,6 +214,7 @@ export const translations = {
       showMore: 'Show more',
       showLess: 'Show less',
       more: 'more',
+      page: 'Page',
     },
     // Home
     home: {
@@ -221,7 +230,7 @@ export const translations = {
       },
       featured: {
         title: 'Featured Products',
-        subtitle: 'Discover our selection of bikes',
+        subtitle: 'Discover our best-selling products',
       },
       whyChoose: {
         title: 'Why Choose Us',
@@ -267,6 +276,13 @@ export const translations = {
       specifications: 'Specifications',
       contactWhatsApp: 'Order via WhatsApp',
       moreInfo: 'More information',
+    },
+    // Promotions
+    promotions: {
+      title: 'Promotions',
+      subtitle: 'Discover our discounted products on sale!',
+      noProducts: 'No promotions available',
+      checkBack: 'Check back soon for new offers!',
     },
     // Services
     services: {
@@ -375,6 +391,7 @@ export const translations = {
       showMore: 'عرض المزيد',
       showLess: 'عرض أقل',
       more: 'إضافي',
+      page: 'صفحة',
     },
     // Home
     home: {
@@ -390,7 +407,7 @@ export const translations = {
       },
       featured: {
         title: 'المنتجات المميزة',
-        subtitle: 'اكتشف مجموعتنا من الدراجات',
+        subtitle: 'اكتشف منتجاتنا الأكثر مبيعاً',
       },
       whyChoose: {
         title: 'لماذا تختارنا',
@@ -436,6 +453,13 @@ export const translations = {
       specifications: 'المواصفات',
       contactWhatsApp: 'اطلب عبر واتساب',
       moreInfo: 'مزيد من المعلومات',
+    },
+    // Promotions
+    promotions: {
+      title: 'العروض الترويجية',
+      subtitle: 'اكتشف منتجاتنا المخفضة!',
+      noProducts: 'لا توجد عروض ترويجية متاحة',
+      checkBack: 'تحقق قريبًا من العروض الجديدة!',
     },
     // Services
     services: {

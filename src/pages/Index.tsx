@@ -8,6 +8,8 @@ import { categories } from '@/lib/data';
 import { useProducts } from '@/hooks/useProducts';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ArrowRight, Wrench, ShoppingCart, Phone } from 'lucide-react';
+import { CategoriesCarousel } from '@/components/CategoriesCarousel';
+import { FeaturedProductsGrid } from '@/components/FeaturedProductsGrid';
 
 export default function Index() {
   const { t, language } = useLanguage();
@@ -28,8 +30,8 @@ export default function Index() {
     );
   }
 
-  // Get featured products (filter by isFeatured flag, max 6)
-  const featuredProducts = products.filter(p => p.isFeatured).slice(0, 6);
+  // Get featured products (filter by isFeatured flag)
+  const featuredProducts = products.filter(p => p.isFeatured);
 
   // Get category name based on language
   const getCategoryName = (category: typeof categories[0]) => {
@@ -123,29 +125,7 @@ export default function Index() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  to={`/categories/${category.slug}`}
-                  className="group"
-                >
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="aspect-square overflow-hidden bg-gray-100">
-                      <img
-                        src={category.imageUrl}
-                        alt={getCategoryName(category)}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <CardContent className="p-3 md:p-4">
-                      <h3 className="font-semibold text-base md:text-lg mb-2 break-words">{getCategoryName(category)}</h3>
-                      <p className="text-xs md:text-sm text-gray-600 break-words">{getCategoryDescription(category)}</p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
+            <CategoriesCarousel categories={categories} getCategoryName={getCategoryName} getCategoryDescription={getCategoryDescription} />
           </div>
         </section>
 
@@ -161,59 +141,11 @@ export default function Index() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
-              {featuredProducts.map((product) => (
-                <Link
-                  key={product.id}
-                  to={`/product/${product.id}`}
-                  className="group"
-                >
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
-                    <div className="aspect-square overflow-hidden bg-gray-100">
-                      <img
-                        src={product.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
-                        alt={getProductName(product)}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <CardContent className="p-3 md:p-4">
-                      <h3 className="font-semibold text-base md:text-lg mb-2 break-words">{getProductName(product)}</h3>
-                      <p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2 break-words">
-                        {getProductDescription(product)}
-                      </p>
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                        {product.discountedPrice && product.originalPrice ? (
-                          <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg md:text-xl font-bold text-red-600 break-words">
-                                {product.discountedPrice.toLocaleString()} DH
-                              </span>
-                              <span className="text-sm text-gray-400 line-through">
-                                {product.originalPrice.toLocaleString()} DH
-                              </span>
-                            </div>
-                          </div>
-                        ) : (
-                          <span className="text-lg md:text-xl font-bold text-green-600 break-words">
-                            {product.price.toLocaleString()} DH
-                          </span>
-                        )}
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
-                          {t.common.viewDetails}
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
+            <FeaturedProductsGrid products={featuredProducts} />
 
-            <div className="text-center">
+            <div className="text-center mt-6 md:mt-8">
               <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-                <Link to="/categories">
-                  {t.common.viewAll}
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                <Link to="/categories">{t.common.viewAll}</Link>
               </Button>
             </div>
           </div>

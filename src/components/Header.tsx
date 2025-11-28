@@ -1,105 +1,137 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { SearchBar } from '@/components/SearchBar';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, X } from 'lucide-react';
+import { categories, subcategories } from '@/lib/data';
+import { Menu, X, ChevronRight, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+type MobileView = 'main' | 'categories' | 'subcategories';
+
 export function Header() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileView, setMobileView] = useState<MobileView>('main');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
-  const mobileMenuVariants = {
-    hidden: {
-      opacity: 0,
-      height: 0,
-      transition: {
-        duration: 0.3,
-        ease: 'easeInOut',
-        when: 'afterChildren',
-      },
-    },
-    visible: {
-      opacity: 1,
-      height: 'auto',
-      transition: {
-        duration: 0.3,
-        ease: 'easeInOut',
-        when: 'beforeChildren',
-        staggerChildren: 0.05,
-      },
-    },
+  const getCategoryName = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category) return '';
+    switch (language) {
+      case 'ar': return category.nameAr;
+      case 'en': return category.nameEn;
+      default: return category.nameFr;
+    }
   };
 
-  const menuItemVariants = {
-    hidden: {
-      opacity: 0,
-      x: -20,
-    },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        duration: 0.2,
-        ease: 'easeOut',
-      },
-    },
+  const getSubcategoryName = (subcategory: typeof subcategories[0]) => {
+    switch (language) {
+      case 'ar': return subcategory.nameAr;
+      case 'en': return subcategory.nameEn;
+      default: return subcategory.nameFr;
+    }
   };
+
+  const getCategorySubcategories = (categoryId: string) => {
+    return subcategories.filter(sub => sub.parentCategoryId === categoryId);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+    setMobileView('main');
+    setSelectedCategoryId(null);
+  };
+
+  const goToCategoriesView = () => {
+    setMobileView('categories');
+  };
+
+  const goToMainView = () => {
+    setMobileView('main');
+    setSelectedCategoryId(null);
+  };
+
+  const goToSubcategoriesView = (categoryId: string) => {
+    setSelectedCategoryId(categoryId);
+    setMobileView('subcategories');
+  };
+
+  const mobileSlideVariants = {
+    enter: (direction: number) => ({ x: direction > 0 ? '100%' : '-100%', opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (direction: number) => ({ x: direction < 0 ? '100%' : '-100%', opacity: 0 }),
+  };
+
+  const sortedCategories = [...categories].sort((a, b) => a.displayOrder - b.displayOrder);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container flex h-16 md:h-24 items-center justify-between px-4">
-        <NavLink to="/" className="flex items-center flex-shrink-0">
-          <img 
-            src="/logo.png" 
-            alt="Dima Vélo Logo" 
+        <Link to="/" className="flex items-center flex-shrink-0">
+          <img
+            src="/logo.png"
+            alt="Dima Vélo Logo"
             className="h-12 md:h-20 w-auto object-contain"
           />
-        </NavLink>
-        
+        </Link>
+
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1 lg:gap-2">
           <Button variant="ghost" asChild className="text-sm lg:text-base">
-            <NavLink 
-              to="/"
-              className={({ isActive }) => 
-                isActive ? "text-green-600 font-semibold" : ""
-              }
-            >
-              {t.nav.home}
-            </NavLink>
+            <Link to="/">{t.nav.home}</Link>
           </Button>
-          <Button variant="ghost" asChild className="text-sm lg:text-base">
-            <NavLink 
-              to="/categories"
-              className={({ isActive }) => 
-                isActive ? "text-green-600 font-semibold" : ""
-              }
-            >
+
+          {/* Categories Dropdown */}
+          <div className="group relative">
+            <Button variant="ghost" className="text-sm lg:text-base">
               {t.nav.categories}
-            </NavLink>
+            </Button>
+            <div className="absolute left-0 top-full pt-2 hidden group-hover:block z-50">
+              <div className="bg-white rounded-lg shadow-lg border py-2 min-w-[200px]">
+                {sortedCategories.map((category) => {
+                  const subs = getCategorySubcategories(category.id);
+                  const categoryName = getCategoryName(category.id);
+
+                  return (
+                    <div key={category.id} className="group/item relative">
+                      <Link
+                        to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`}
+                        className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 text-sm"
+                      >
+                        <span>{categoryName}</span>
+                        {subs.length > 0 && <ChevronRight className="h-4 w-4" />}
+                      </Link>
+
+                      {/* Subcategories Dropdown */}
+                      {subs.length > 0 && (
+                        <div className="absolute left-full top-0 -ml-0.5 hidden group-hover/item:block">
+                          <div className="bg-white rounded-lg shadow-lg border py-2 min-w-[180px]">
+                            {subs.map((sub) => (
+                              <Link
+                                key={sub.id}
+                                to={`/categories/${category.slug}/${sub.slug}`}
+                                className="block px-4 py-2 hover:bg-gray-100 text-sm"
+                              >
+                                {getSubcategoryName(sub)}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <Button variant="ghost" asChild className="text-sm lg:text-base">
+            <Link to="/services">{t.nav.services}</Link>
           </Button>
           <Button variant="ghost" asChild className="text-sm lg:text-base">
-            <NavLink 
-              to="/services"
-              className={({ isActive }) => 
-                isActive ? "text-green-600 font-semibold" : ""
-              }
-            >
-              {t.nav.services}
-            </NavLink>
-          </Button>
-          <Button variant="ghost" asChild className="text-sm lg:text-base">
-            <NavLink 
-              to="/contact"
-              className={({ isActive }) => 
-                isActive ? "text-green-600 font-semibold" : ""
-              }
-            >
-              {t.nav.contact}
-            </NavLink>
+            <Link to="/contact">{t.nav.contact}</Link>
           </Button>
           <SearchBar />
           <LanguageSwitcher />
@@ -114,102 +146,141 @@ export function Header() {
             size="icon"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
-            className="relative"
           >
-            <motion.div
-              initial={false}
-              animate={{ rotate: mobileMenuOpen ? 90 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </motion.div>
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
       </div>
 
-      {/* Mobile Navigation with Animation */}
+      {/* Mobile Full-Screen Navigation */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            variants={mobileMenuVariants}
-            className="md:hidden border-t bg-white overflow-hidden"
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'tween', duration: 0.3 }}
+            className="fixed inset-0 top-16 bg-white z-50 md:hidden overflow-hidden"
           >
-            <nav className="container px-4 py-4 flex flex-col space-y-2">
-              <motion.div variants={menuItemVariants}>
-                <Button 
-                  variant="ghost" 
-                  asChild 
-                  className="w-full justify-start"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <NavLink 
-                    to="/"
-                    className={({ isActive }) => 
-                      isActive ? "text-green-600 font-semibold" : ""
-                    }
+            <div className="h-full overflow-y-auto">
+              <AnimatePresence mode="wait" custom={mobileView === 'main' ? -1 : 1}>
+                {/* Main Menu */}
+                {mobileView === 'main' && (
+                  <motion.div
+                    key="main"
+                    custom={-1}
+                    variants={mobileSlideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ duration: 0.3 }}
+                    className="p-4 space-y-2"
                   >
-                    {t.nav.home}
-                  </NavLink>
-                </Button>
-              </motion.div>
+                    <Button variant="ghost" asChild className="w-full justify-start text-lg py-6">
+                      <Link to="/" onClick={closeMobileMenu}>{t.nav.home}</Link>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-between text-lg py-6"
+                      onClick={goToCategoriesView}
+                    >
+                      <span>{t.nav.categories}</span>
+                      <ChevronRight className="h-5 w-5" />
+                    </Button>
+                    <Button variant="ghost" asChild className="w-full justify-start text-lg py-6">
+                      <Link to="/services" onClick={closeMobileMenu}>{t.nav.services}</Link>
+                    </Button>
+                    <Button variant="ghost" asChild className="w-full justify-start text-lg py-6">
+                      <Link to="/contact" onClick={closeMobileMenu}>{t.nav.contact}</Link>
+                    </Button>
+                  </motion.div>
+                )}
 
-              <motion.div variants={menuItemVariants}>
-                <Button 
-                  variant="ghost" 
-                  asChild 
-                  className="w-full justify-start"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <NavLink 
-                    to="/categories"
-                    className={({ isActive }) => 
-                      isActive ? "text-green-600 font-semibold" : ""
-                    }
+                {/* Categories View */}
+                {mobileView === 'categories' && (
+                  <motion.div
+                    key="categories"
+                    custom={1}
+                    variants={mobileSlideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ duration: 0.3 }}
+                    className="h-full"
                   >
-                    {t.nav.categories}
-                  </NavLink>
-                </Button>
-              </motion.div>
+                    <div className="sticky top-0 bg-white border-b p-4 flex items-center gap-3">
+                      <Button variant="ghost" size="icon" onClick={goToMainView}>
+                        <ChevronLeft className="h-5 w-5" />
+                      </Button>
+                      <h2 className="text-lg font-semibold">{t.nav.categories}</h2>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      {sortedCategories.map((category) => {
+                        const subs = getCategorySubcategories(category.id);
+                        const categoryName = getCategoryName(category.id);
 
-              <motion.div variants={menuItemVariants}>
-                <Button 
-                  variant="ghost" 
-                  asChild 
-                  className="w-full justify-start"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <NavLink 
-                    to="/services"
-                    className={({ isActive }) => 
-                      isActive ? "text-green-600 font-semibold" : ""
-                    }
-                  >
-                    {t.nav.services}
-                  </NavLink>
-                </Button>
-              </motion.div>
+                        return (
+                          <div key={category.id}>
+                            {subs.length > 0 ? (
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-between text-lg py-6"
+                                onClick={() => goToSubcategoriesView(category.id)}
+                              >
+                                <span>{categoryName}</span>
+                                <ChevronRight className="h-5 w-5" />
+                              </Button>
+                            ) : (
+                              <Button variant="ghost" asChild className="w-full justify-start text-lg py-6">
+                                <Link
+                                  to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`}
+                                  onClick={closeMobileMenu}
+                                >
+                                  {categoryName}
+                                </Link>
+                              </Button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
 
-              <motion.div variants={menuItemVariants}>
-                <Button 
-                  variant="ghost" 
-                  asChild 
-                  className="w-full justify-start"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <NavLink 
-                    to="/contact"
-                    className={({ isActive }) => 
-                      isActive ? "text-green-600 font-semibold" : ""
-                    }
+                {/* Subcategories View */}
+                {mobileView === 'subcategories' && selectedCategoryId && (
+                  <motion.div
+                    key="subcategories"
+                    custom={1}
+                    variants={mobileSlideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ duration: 0.3 }}
+                    className="h-full"
                   >
-                    {t.nav.contact}
-                  </NavLink>
-                </Button>
-              </motion.div>
-            </nav>
+                    <div className="sticky top-0 bg-white border-b p-4 flex items-center gap-3">
+                      <Button variant="ghost" size="icon" onClick={() => setMobileView('categories')}>
+                        <ChevronLeft className="h-5 w-5" />
+                      </Button>
+                      <h2 className="text-lg font-semibold">{getCategoryName(selectedCategoryId)}</h2>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      {getCategorySubcategories(selectedCategoryId).map((sub) => {
+                        const category = categories.find(c => c.id === selectedCategoryId);
+                        return (
+                          <Button key={sub.id} variant="ghost" asChild className="w-full justify-start text-lg py-6">
+                            <Link to={`/categories/${category?.slug}/${sub.slug}`} onClick={closeMobileMenu}>
+                              {getSubcategoryName(sub)}
+                            </Link>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
