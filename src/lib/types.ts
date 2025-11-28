@@ -41,6 +41,9 @@ export interface Product {
   images: string[];
   specifications: Record<string, string>;
   displayOrder: number;
+  viewCount?: number;
+  originalPrice?: number;
+  discountedPrice?: number;
 }
 
 export interface ContactRequest {

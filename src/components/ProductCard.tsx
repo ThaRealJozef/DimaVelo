@@ -32,15 +32,27 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
         <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.descriptionFr}</p>
         <div className="flex items-center justify-between">
-          <span className="text-xl font-bold text-blue-600">{formatPrice(product.price)}</span>
-          <Badge variant={product.inStock ? 'default' : 'secondary'}>
-            {product.inStock ? t.products.inStock : t.products.outOfStock}
+          {product.isFeatured && product.discountedPrice && product.originalPrice ? (
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold text-red-600">{formatPrice(product.discountedPrice)}</span>
+                <span className="text-sm text-gray-400 line-through">{formatPrice(product.originalPrice)}</span>
+              </div>
+              <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded">
+                {(product.originalPrice - product.discountedPrice).toLocaleString()} DH d'économie
+              </span>
+            </div>
+          ) : (
+            <span className="text-xl font-bold text-blue-600">{formatPrice(product.price)}</span>
+          )}
+          <Badge variant={product.isAvailable ? 'default' : 'secondary'}>
+            {product.isAvailable ? t.product.inStock : t.product.outOfStock}
           </Badge>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <Button asChild className="w-full">
-          <Link to={`/product/${product.id}`}>{t.products.viewDetails}</Link>
+          <Link to={`/product/${product.id}`}>{t.common.viewDetails}</Link>
         </Button>
       </CardFooter>
     </Card>

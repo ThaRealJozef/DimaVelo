@@ -58,6 +58,8 @@ export default function AdminPage() {
     descriptionEn: '',
     descriptionAr: '',
     isFeatured: false,
+    originalPrice: '',
+    discountedPrice: '',
   });
   const [productImages, setProductImages] = useState<File[]>([]);
 
@@ -115,6 +117,8 @@ export default function AdminPage() {
           specifications: {},
           isAvailable: parseInt(newProduct.stockQuantity) > 0,
           isFeatured: newProduct.isFeatured,
+          originalPrice: newProduct.isFeatured && newProduct.originalPrice ? parseFloat(newProduct.originalPrice) : undefined,
+          discountedPrice: newProduct.isFeatured && newProduct.discountedPrice ? parseFloat(newProduct.discountedPrice) : undefined,
           displayOrder: products.length,
         },
         productImages
@@ -153,6 +157,8 @@ export default function AdminPage() {
           descriptionEn: editingProduct.descriptionEn,
           descriptionAr: editingProduct.descriptionAr,
           isFeatured: editingProduct.isFeatured,
+          originalPrice: editingProduct.isFeatured ? editingProduct.originalPrice : undefined,
+          discountedPrice: editingProduct.isFeatured ? editingProduct.discountedPrice : undefined,
           isAvailable: editingProduct.stockQuantity > 0,
         },
         productImages,
@@ -210,6 +216,8 @@ export default function AdminPage() {
       descriptionEn: '',
       descriptionAr: '',
       isFeatured: false,
+      originalPrice: '',
+      discountedPrice: '',
     });
     setProductImages([]);
   };
@@ -578,6 +586,33 @@ export default function AdminPage() {
                         />
                         <Label htmlFor="isFeatured">Produit vedette (afficher sur la page d'accueil)</Label>
                       </div>
+                      {newProduct.isFeatured && (
+                        <div className="grid grid-cols-2 gap-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                          <div>
+                            <Label htmlFor="originalPrice">Prix Original (MAD)</Label>
+                            <Input
+                              id="originalPrice"
+                              type="number"
+                              value={newProduct.originalPrice || ''}
+                              onChange={(e) => setNewProduct({ ...newProduct, originalPrice: e.target.value })}
+                              placeholder="Ex: 149.95"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="discountedPrice">Prix Réduit (MAD)</Label>
+                            <Input
+                              id="discountedPrice"
+                              type="number"
+                              value={newProduct.discountedPrice || ''}
+                              onChange={(e) => setNewProduct({ ...newProduct, discountedPrice: e.target.value })}
+                              placeholder="Ex: 139.95"
+                            />
+                          </div>
+                          <p className="text-xs text-yellow-700 col-span-2">
+                            ⚠️ <strong>Important:</strong> Ces prix remplacent le "Prix Normal" pour les produits vedettes uniquement. Le prix normal reste pour les produits non-vedettes.
+                          </p>
+                        </div>
+                      )}
                       <div>
                         <Label htmlFor="images">Images</Label>
                         <Input
@@ -643,14 +678,21 @@ export default function AdminPage() {
                               {getSubcategoryName(product.subcategoryId)}
                             </p>
                           )}
-                          <Badge variant={product.stockQuantity > 5 ? 'default' : 'secondary'}>
-                            Stock: {product.stockQuantity}
-                          </Badge>
-                          {product.isFeatured && (
-                            <Badge variant="default" className="ml-2 bg-green-600">
-                              Vedette
+                          <div className="flex gap-2 mt-1">
+                            <Badge variant={product.stockQuantity > 5 ? 'default' : 'secondary'}>
+                              Stock: {product.stockQuantity}
                             </Badge>
-                          )}
+                            {product.isFeatured && (
+                              <Badge variant="default" className="bg-green-600">
+                                Vedette
+                              </Badge>
+                            )}
+                            {product.viewCount && product.viewCount > 0 && (
+                              <Badge variant="outline" className="text-blue-600">
+                                👁️ {product.viewCount} vues
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                         <div className="flex gap-2">
                           <Button size="sm" variant="outline" onClick={() => openEditDialog(product)}>
@@ -861,7 +903,7 @@ export default function AdminPage() {
               )}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="editPrice">Prix (MAD) *</Label>
+                  <Label htmlFor="editPrice">Prix Normal (MAD) *</Label>
                   <Input
                     id="editPrice"
                     type="number"
@@ -869,6 +911,7 @@ export default function AdminPage() {
                     onChange={(e) => setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) })}
                     required
                   />
+                  <p className="text-xs text-gray-500 mt-1">Prix affiché pour les produits non-vedettes</p>
                 </div>
                 <div>
                   <Label htmlFor="editStock">Stock *</Label>
@@ -919,6 +962,33 @@ export default function AdminPage() {
                 />
                 <Label htmlFor="editIsFeatured">Produit vedette</Label>
               </div>
+              {editingProduct.isFeatured && (
+                <div className="grid grid-cols-2 gap-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
+                  <div>
+                    <Label htmlFor="editOriginalPrice">Prix Original (MAD)</Label>
+                    <Input
+                      id="editOriginalPrice"
+                      type="number"
+                      value={editingProduct.originalPrice || ''}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, originalPrice: parseFloat(e.target.value) || undefined })}
+                      placeholder="Ex: 149.95"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="editDiscountedPrice">Prix Réduit (MAD)</Label>
+                    <Input
+                      id="editDiscountedPrice"
+                      type="number"
+                      value={editingProduct.discountedPrice || ''}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, discountedPrice: parseFloat(e.target.value) || undefined })}
+                      placeholder="Ex: 139.95"
+                    />
+                  </div>
+                  <p className="text-xs text-yellow-700 col-span-2">
+                    ⚠️ <strong>Important:</strong> Ces prix remplacent le "Prix Normal" pour les produits vedettes uniquement. Le prix normal reste pour les produits non-vedettes.
+                  </p>
+                </div>
+              )}
               {/* Image Management Section */}
               <div className="space-y-4 border-t pt-4 mt-4">
                 <h3 className="font-medium">Gestion des Images</h3>

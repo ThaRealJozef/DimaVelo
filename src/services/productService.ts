@@ -242,4 +242,24 @@ export const productService = {
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '');
   },
+
+  /**
+   * Increment view count for a product
+   */
+  async incrementViewCount(productId: string): Promise<void> {
+    try {
+      const docRef = doc(db, PRODUCTS_COLLECTION, productId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const currentViewCount = docSnap.data().viewCount || 0;
+        await updateDoc(docRef, {
+          viewCount: currentViewCount + 1,
+        });
+      }
+    } catch (error) {
+      // Silent fail - view counting shouldn't block page load
+      console.error('Error incrementing view count:', error);
+    }
+  },
 };

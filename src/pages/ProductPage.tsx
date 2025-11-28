@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useProducts } from '@/hooks/useProducts';
@@ -9,6 +10,7 @@ import { ArrowLeft, MessageCircle } from 'lucide-react';
 import { generateWhatsAppLink } from '@/lib/utils-bike';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ProductImageGallery } from '@/components/ProductImageGallery';
+import { productService } from '@/services/productService';
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -71,6 +73,9 @@ export default function ProductPage() {
   const productDescription = getLocalizedField('description');
   const whatsappLink = generateWhatsAppLink(productName, product.price, product.id);
 
+  // NOTE: View tracking disabled - causes crashes, needs debugging
+  // TODO: Fix incrementViewCount to work without breaking the page
+
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
       <Header />
@@ -101,8 +106,26 @@ export default function ProductPage() {
                 </Badge>
               </div>
 
-              <div className="text-2xl md:text-3xl font-bold text-green-600 mb-4 md:mb-6 break-words">
-                {product.price.toLocaleString()} DH
+              <div className="mb-4 md:mb-6 break-words">
+                {product.isFeatured && product.discountedPrice && product.originalPrice ? (
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl md:text-4xl font-bold text-red-600">
+                        {product.discountedPrice.toLocaleString()} DH
+                      </span>
+                      <span className="text-xl md:text-2xl text-gray-400 line-through">
+                        {product.originalPrice.toLocaleString()} DH
+                      </span>
+                    </div>
+                    <span className="inline-block w-fit text-sm font-medium text-red-600 bg-red-50 px-2 py-1 rounded">
+                      Économisez {(product.originalPrice - product.discountedPrice).toLocaleString()} DH
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-2xl md:text-3xl font-bold text-green-600">
+                    {product.price.toLocaleString()} DH
+                  </div>
+                )}
               </div>
 
               <div className="prose max-w-none mb-6 md:mb-8">
@@ -147,6 +170,47 @@ export default function ProductPage() {
               </div>
             </div>
           </div>
+
+          {/* Related Products / Recommendations */}
+          {products && products.length > 0 && (
+            <div className="mt-12">
+              <h2 className="text-2xl font-bold mb-6">
+                {language === 'ar' ? 'منتجات مماثلة' : language === 'en' ? 'Similar Products' : 'Produits Similaires'}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {products
+                  .filter(p => p.categoryId === product.categoryId && p.id !== product.id)
+                  .slice(0, 4)
+                  .map(relatedProduct => {
+                    // Safely get localized name
+                    let relatedProductName = relatedProduct.nameFr;
+                    if (language === 'ar' && relatedProduct.nameAr) {
+                      relatedProductName = relatedProduct.nameAr;
+                    } else if (language === 'en' && relatedProduct.nameEn) {
+                      relatedProductName = relatedProduct.nameEn;
+                    }
+
+                    return (
+                      <Link key={relatedProduct.id} to={`/product/${relatedProduct.id}`}>
+                        <Card className="hover:shadow-lg transition-shadow">
+                          <div className="aspect-square overflow-hidden bg-gray-100">
+                            <img
+                              src={relatedProduct.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
+                              alt={relatedProductName}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <CardContent className="p-3">
+                            <h3 className="font-semibold text-sm mb-1 line-clamp-2">{relatedProductName}</h3>
+                            <p className="text-green-600 font-bold">{relatedProduct.price.toLocaleString()} DH</p>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
         </div>
       </main>
 

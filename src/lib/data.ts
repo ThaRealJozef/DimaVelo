@@ -50,6 +50,18 @@ export const categories: Category[] = [
     imageUrl: '/assets/category-chaussures.jpg',
     displayOrder: 4,
   },
+  {
+    id: '5',
+    nameFr: 'Nutrition',
+    nameEn: 'Nutrition',
+    nameAr: 'التغذية',
+    slug: 'nutrition',
+    descriptionFr: 'Compléments et nutrition pour cyclistes',
+    descriptionEn: 'Supplements and nutrition for cyclists',
+    descriptionAr: 'المكملات والتغذية للدراجين',
+    imageUrl: '/assets/category-nutritions.png',
+    displayOrder: 5,
+  },
 ];
 
 export const subcategories: Subcategory[] = [

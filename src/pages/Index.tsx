@@ -182,9 +182,22 @@ export default function Index() {
                         {getProductDescription(product)}
                       </p>
                       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                        <span className="text-lg md:text-xl font-bold text-green-600 break-words">
-                          {product.price.toLocaleString()} DH
-                        </span>
+                        {product.discountedPrice && product.originalPrice ? (
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg md:text-xl font-bold text-red-600 break-words">
+                                {product.discountedPrice.toLocaleString()} DH
+                              </span>
+                              <span className="text-sm text-gray-400 line-through">
+                                {product.originalPrice.toLocaleString()} DH
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-lg md:text-xl font-bold text-green-600 break-words">
+                            {product.price.toLocaleString()} DH
+                          </span>
+                        )}
                         <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
                           {t.common.viewDetails}
                         </Button>
