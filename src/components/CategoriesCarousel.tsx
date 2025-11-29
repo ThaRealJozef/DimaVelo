@@ -53,11 +53,11 @@ export function CategoriesCarousel({ categories, getCategoryName, getCategoryDes
     return (
         <div className="relative">
             <div className="overflow-hidden" ref={emblaRef}>
-                <div className="flex gap-4 md:gap-6">
+                <div className="flex gap-3 md:gap-6">
                     {categories.map((category) => (
                         <div
                             key={category.id}
-                            className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_calc(50%-0.75rem)] lg:flex-[0_0_calc(33.333%-1rem)] xl:flex-[0_0_calc(25%-1.125rem)]"
+                            className="flex-[0_0_calc(50%-0.5rem)] min-w-0 lg:flex-[0_0_calc(33.333%-1rem)] xl:flex-[0_0_calc(25%-1.125rem)]"
                         >
                             <Link
                                 to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`}

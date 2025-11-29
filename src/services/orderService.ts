@@ -28,14 +28,11 @@ export interface Order {
 const ORDERS_COLLECTION = 'orders';
 
 export const orderService = {
-  /**
-   * Get all orders
-   */
   async getAllOrders(): Promise<Order[]> {
     try {
       const q = query(collection(db, ORDERS_COLLECTION), orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
-      
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -46,9 +43,6 @@ export const orderService = {
     }
   },
 
-  /**
-   * Get orders by status
-   */
   async getOrdersByStatus(status: Order['status']): Promise<Order[]> {
     try {
       const q = query(
@@ -57,7 +51,7 @@ export const orderService = {
         orderBy('createdAt', 'desc')
       );
       const querySnapshot = await getDocs(q);
-      
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -68,21 +62,18 @@ export const orderService = {
     }
   },
 
-  /**
-   * Get a single order by ID
-   */
   async getOrderById(id: string): Promise<Order | null> {
     try {
       const docRef = doc(db, ORDERS_COLLECTION, id);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         return {
           id: docSnap.id,
           ...docSnap.data(),
         } as Order;
       }
-      
+
       return null;
     } catch (error) {
       console.error('Error getting order:', error);
@@ -90,9 +81,6 @@ export const orderService = {
     }
   },
 
-  /**
-   * Create a new order
-   */
   async createOrder(orderData: Omit<Order, 'id' | 'createdAt' | 'status'>): Promise<string> {
     try {
       const newOrder = {
@@ -109,9 +97,6 @@ export const orderService = {
     }
   },
 
-  /**
-   * Update order status
-   */
   async updateOrderStatus(id: string, status: Order['status']): Promise<void> {
     try {
       const docRef = doc(db, ORDERS_COLLECTION, id);
@@ -122,9 +107,6 @@ export const orderService = {
     }
   },
 
-  /**
-   * Delete an order
-   */
   async deleteOrder(id: string): Promise<void> {
     try {
       const docRef = doc(db, ORDERS_COLLECTION, id);

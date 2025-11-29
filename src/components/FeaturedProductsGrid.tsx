@@ -59,8 +59,8 @@ export function FeaturedProductsGrid({ products }: FeaturedProductsGridProps) {
 
     return (
         <div className="relative">
-            {/* Grid - 4 columns x 2 rows */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
+            {/* Grid - 2 columns on mobile, 4 columns on desktop */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6">
                 {currentProducts.map((product) => (
                     <Link
                         key={product.id}

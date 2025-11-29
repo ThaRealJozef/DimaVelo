@@ -1,6 +1,6 @@
-import { 
-  signInWithEmailAndPassword, 
-  signOut, 
+import {
+  signInWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
   User,
   AuthError
@@ -8,9 +8,6 @@ import {
 import { auth } from '@/lib/firebase';
 
 class AuthService {
-  /**
-   * Sign in with email and password
-   */
   async login(email: string, password: string): Promise<User> {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -22,9 +19,6 @@ class AuthService {
     }
   }
 
-  /**
-   * Sign out the current user
-   */
   async logout(): Promise<void> {
     try {
       await signOut(auth);
@@ -34,23 +28,14 @@ class AuthService {
     }
   }
 
-  /**
-   * Get the current authenticated user
-   */
   getCurrentUser(): User | null {
     return auth.currentUser;
   }
 
-  /**
-   * Listen to authentication state changes
-   */
   onAuthStateChanged(callback: (user: User | null) => void): () => void {
     return onAuthStateChanged(auth, callback);
   }
 
-  /**
-   * Get user-friendly error messages
-   */
   private getErrorMessage(errorCode: string): string {
     switch (errorCode) {
       case 'auth/invalid-email':

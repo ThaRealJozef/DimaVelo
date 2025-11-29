@@ -29,14 +29,11 @@ export interface Booking {
 const BOOKINGS_COLLECTION = 'bookings';
 
 export const bookingService = {
-  /**
-   * Get all bookings
-   */
   async getAllBookings(): Promise<Booking[]> {
     try {
       const q = query(collection(db, BOOKINGS_COLLECTION), orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
-      
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -47,9 +44,6 @@ export const bookingService = {
     }
   },
 
-  /**
-   * Get bookings by status
-   */
   async getBookingsByStatus(status: Booking['status']): Promise<Booking[]> {
     try {
       const q = query(
@@ -58,7 +52,7 @@ export const bookingService = {
         orderBy('createdAt', 'desc')
       );
       const querySnapshot = await getDocs(q);
-      
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -69,21 +63,18 @@ export const bookingService = {
     }
   },
 
-  /**
-   * Get a single booking by ID
-   */
   async getBookingById(id: string): Promise<Booking | null> {
     try {
       const docRef = doc(db, BOOKINGS_COLLECTION, id);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         return {
           id: docSnap.id,
           ...docSnap.data(),
         } as Booking;
       }
-      
+
       return null;
     } catch (error) {
       console.error('Error getting booking:', error);
@@ -91,9 +82,6 @@ export const bookingService = {
     }
   },
 
-  /**
-   * Create a new booking
-   */
   async createBooking(bookingData: Omit<Booking, 'id' | 'createdAt' | 'status'>): Promise<string> {
     try {
       const newBooking = {
@@ -110,9 +98,6 @@ export const bookingService = {
     }
   },
 
-  /**
-   * Update booking status
-   */
   async updateBookingStatus(id: string, status: Booking['status']): Promise<void> {
     try {
       const docRef = doc(db, BOOKINGS_COLLECTION, id);
@@ -123,9 +108,6 @@ export const bookingService = {
     }
   },
 
-  /**
-   * Delete a booking
-   */
   async deleteBooking(id: string): Promise<void> {
     try {
       const docRef = doc(db, BOOKINGS_COLLECTION, id);

@@ -1,12 +1,7 @@
 import { uploadImageToImgBB } from '@/utils/imageUpload';
 
 export const imageService = {
-  /**
-   * Upload an image to ImgBB
-   * @param file - The image file to upload
-   * @param path - Unused in ImgBB implementation, kept for compatibility
-   * @returns The download URL of the uploaded image
-   */
+  // ImgBB implementation - 'path' parameter kept for compatibility
   async uploadImage(file: File, path?: string): Promise<string> {
     try {
       return await uploadImageToImgBB(file);
@@ -16,12 +11,6 @@ export const imageService = {
     }
   },
 
-  /**
-   * Upload multiple images to ImgBB
-   * @param files - Array of image files to upload
-   * @param basePath - Unused in ImgBB implementation, kept for compatibility
-   * @returns Array of download URLs
-   */
   async uploadMultipleImages(files: File[], basePath?: string): Promise<string[]> {
     try {
       const uploadPromises = files.map((file) => this.uploadImage(file));
@@ -32,27 +21,14 @@ export const imageService = {
     }
   },
 
-  /**
-   * Delete an image
-   * Note: ImgBB API simple upload doesn't support deletion via API key without extra setup.
-   * This is a placeholder to prevent errors in existing code.
-   * @param imageUrl - The URL of the image
-   */
+  // Note: ImgBB doesn't support deletion via API - placeholder to prevent errors
   async deleteImage(imageUrl: string): Promise<void> {
     console.warn('Image deletion is not supported with ImgBB simple integration. Image URL:', imageUrl);
-    // No-op
     return Promise.resolve();
   },
 
-  /**
-   * Delete multiple images
-   * Note: ImgBB API simple upload doesn't support deletion via API key without extra setup.
-   * This is a placeholder to prevent errors in existing code.
-   * @param imageUrls - Array of image URLs
-   */
   async deleteMultipleImages(imageUrls: string[]): Promise<void> {
     console.warn('Image deletion is not supported with ImgBB simple integration.', imageUrls);
-    // No-op
     return Promise.resolve();
   },
 };

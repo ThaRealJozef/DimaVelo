@@ -26,14 +26,11 @@ export interface ContactMessage {
 const CONTACT_MESSAGES_COLLECTION = 'contact_messages';
 
 export const contactService = {
-  /**
-   * Get all contact messages
-   */
   async getAllMessages(): Promise<ContactMessage[]> {
     try {
       const q = query(collection(db, CONTACT_MESSAGES_COLLECTION), orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
-      
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -44,9 +41,6 @@ export const contactService = {
     }
   },
 
-  /**
-   * Get messages by status
-   */
   async getMessagesByStatus(status: ContactMessage['status']): Promise<ContactMessage[]> {
     try {
       const q = query(
@@ -55,7 +49,7 @@ export const contactService = {
         orderBy('createdAt', 'desc')
       );
       const querySnapshot = await getDocs(q);
-      
+
       return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -66,21 +60,18 @@ export const contactService = {
     }
   },
 
-  /**
-   * Get a single message by ID
-   */
   async getMessageById(id: string): Promise<ContactMessage | null> {
     try {
       const docRef = doc(db, CONTACT_MESSAGES_COLLECTION, id);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         return {
           id: docSnap.id,
           ...docSnap.data(),
         } as ContactMessage;
       }
-      
+
       return null;
     } catch (error) {
       console.error('Error getting message:', error);
@@ -88,9 +79,6 @@ export const contactService = {
     }
   },
 
-  /**
-   * Create a new contact message
-   */
   async createMessage(messageData: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>): Promise<string> {
     try {
       const newMessage = {
@@ -107,9 +95,6 @@ export const contactService = {
     }
   },
 
-  /**
-   * Update message status
-   */
   async updateMessageStatus(id: string, status: ContactMessage['status']): Promise<void> {
     try {
       const docRef = doc(db, CONTACT_MESSAGES_COLLECTION, id);
@@ -120,9 +105,6 @@ export const contactService = {
     }
   },
 
-  /**
-   * Delete a message
-   */
   async deleteMessage(id: string): Promise<void> {
     try {
       const docRef = doc(db, CONTACT_MESSAGES_COLLECTION, id);

@@ -160,7 +160,7 @@ export function Header() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'tween', duration: 0.3 }}
-            className="fixed inset-0 top-16 bg-white z-50 md:hidden overflow-hidden"
+            className="fixed inset-0 top-[64px] bg-white z-50 md:hidden overflow-hidden"
           >
             <div className="h-full overflow-y-auto">
               <AnimatePresence mode="wait" custom={mobileView === 'main' ? -1 : 1}>
