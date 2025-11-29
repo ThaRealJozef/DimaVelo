@@ -10,7 +10,7 @@ export interface ServiceData {
 
 export const servicesData: ServiceData[] = [
   {
-    id: 'bike-repair',
+    id: 'bikeRepair',
     icon: '🔧',
     price: 300,
     duration: '60',

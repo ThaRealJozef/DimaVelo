@@ -20,7 +20,7 @@ export default function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useLanguage();
   const category = categories.find(c => c.slug === slug);
-  
+
   const [filters, setFilters] = useState<ProductFilters>({
     categoryId: category?.id,
     minPrice: 0,
@@ -28,7 +28,7 @@ export default function CategoryPage() {
     inStock: true,
     search: '',
   });
-  
+
   const [sortOption, setSortOption] = useState<SortOption>('newest');
   const [priceRange, setPriceRange] = useState([0, 50000]);
 
@@ -52,7 +52,7 @@ export default function CategoryPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1">
         {/* Hero */}
         <section className="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
@@ -70,7 +70,7 @@ export default function CategoryPage() {
               <aside className="lg:col-span-1">
                 <div className="bg-white p-6 rounded-lg shadow-sm sticky top-20">
                   <h2 className="text-xl font-bold mb-6">{t.filters.title}</h2>
-                  
+
                   {/* Recherche */}
                   <div className="mb-6">
                     <Label htmlFor="search" className="mb-2 block">{t.filters.search}</Label>
@@ -121,8 +121,8 @@ export default function CategoryPage() {
                     </Select>
                   </div>
 
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full"
                     onClick={() => {
                       setFilters({ categoryId: category.id, minPrice: 0, maxPrice: 50000, inStock: true, search: '' });
@@ -144,7 +144,7 @@ export default function CategoryPage() {
                 </div>
 
                 {filteredProducts.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                     {filteredProducts.map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
@@ -152,8 +152,8 @@ export default function CategoryPage() {
                 ) : (
                   <div className="text-center py-16">
                     <p className="text-gray-600 text-lg">{t.products.noProducts}</p>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="mt-4"
                       onClick={() => {
                         setFilters({ categoryId: category.id, minPrice: 0, maxPrice: 50000, inStock: true, search: '' });

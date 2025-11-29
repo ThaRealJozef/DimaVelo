@@ -15,15 +15,15 @@ export default function CategoriesPage() {
   const { products, loading } = useProducts();
   const { categorySlug, subcategorySlug } = useParams();
   const navigate = useNavigate();
-  
+
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<number[]>([0, 50000]);
 
   // Find current category
   const currentCategory = categories.find(cat => cat.slug === categorySlug);
-  
+
   // Get subcategories for current category
-  const categorySubcategories = currentCategory 
+  const categorySubcategories = currentCategory
     ? subcategories.filter(sub => sub.parentCategoryId === currentCategory.id)
     : [];
 
@@ -112,13 +112,13 @@ export default function CategoriesPage() {
     return (
       <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
         <Header />
-        
+
         <main className="flex-1 py-8 overflow-hidden">
           <div className="container px-4">
             <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 break-words">{t.categories.title}</h1>
             <p className="text-gray-600 mb-6 md:mb-8 break-words">{t.categories.subtitle}</p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
               {categories.map((category) => (
                 <Link
                   key={category.id}
@@ -157,7 +157,7 @@ export default function CategoriesPage() {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
       <Header />
-      
+
       <main className="flex-1 py-8 overflow-hidden">
         <div className="container px-4">
           {/* Breadcrumb */}
@@ -170,13 +170,13 @@ export default function CategoriesPage() {
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 break-words">{getCategoryName(currentCategory)}</h1>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
             {/* Filters Sidebar */}
             <div className="lg:col-span-1">
               <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm lg:sticky lg:top-24 overflow-hidden">
                 <h2 className="font-semibold text-base md:text-lg mb-4 break-words">{t.categories.filters}</h2>
-                
+
                 {/* Subcategory Filter */}
                 {categorySubcategories.length > 0 && (
                   <div className="mb-6">
@@ -220,8 +220,8 @@ export default function CategoriesPage() {
                   </div>
                 </div>
 
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full mt-6 text-sm"
                   onClick={() => navigate('/categories')}
                 >
@@ -235,8 +235,8 @@ export default function CategoriesPage() {
               <div className="mb-4 text-sm md:text-base text-gray-600 break-words">
                 {filteredProducts.length} {t.categories.productsFound}
               </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                 {filteredProducts.map((product) => (
                   <Link
                     key={product.id}

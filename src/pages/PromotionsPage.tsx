@@ -66,7 +66,7 @@ export default function PromotionsPage() {
                         <div className="mb-4 text-sm text-gray-600">
                             {promotionProducts.length} {promotionProducts.length === 1 ? 'produit' : 'produits'} en promotion
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
                             {promotionProducts.map((product) => (
                                 <ProductCard key={product.id} product={product} />
                             ))}

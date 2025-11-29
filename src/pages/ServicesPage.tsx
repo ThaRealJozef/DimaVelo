@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function ServicesPage() {
   const { t } = useLanguage();
+  const [searchParams] = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -24,6 +26,14 @@ export default function ServicesPage() {
     date: '',
     message: '',
   });
+
+  // Pre-select service from URL parameter
+  useEffect(() => {
+    const serviceParam = searchParams.get('service');
+    if (serviceParam && servicesData.find(s => s.id === serviceParam)) {
+      setFormData(prev => ({ ...prev, service: serviceParam }));
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +66,7 @@ export default function ServicesPage() {
   // Map service IDs to translations
   const getServiceTranslation = (serviceId: string) => {
     const translations: Record<string, { title: string; desc: string }> = {
-      'bike-repair': { title: t.services.bikeRepair, desc: t.services.bikeRepairDesc },
+      'bikeRepair': { title: t.services.bikeRepair, desc: t.services.bikeRepairDesc },
       'maintenance': { title: t.services.maintenance, desc: t.services.maintenanceDesc },
       'customization': { title: t.services.customization, desc: t.services.customizationDesc },
       'assembly': { title: t.services.assembly, desc: t.services.assemblyDesc },
@@ -74,7 +84,7 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
       <Header />
-      
+
       <main className="flex-1 overflow-hidden">
         {/* Hero */}
         <section className="relative bg-gradient-to-r from-green-600 to-green-800 text-white py-12 md:py-16 overflow-hidden">
@@ -87,7 +97,7 @@ export default function ServicesPage() {
         {/* Services */}
         <section className="py-12 md:py-16 overflow-hidden">
           <div className="container px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-12 md:mb-16">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 mb-12 md:mb-16">
               {servicesData.map((service) => {
                 const translation = getServiceTranslation(service.id);
                 return (
