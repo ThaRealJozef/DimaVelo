@@ -171,7 +171,6 @@ export default function ServicesPage() {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder={t.contact.emailPlaceholder}
-                        required
                         className="text-sm md:text-base"
                       />
                     </div>

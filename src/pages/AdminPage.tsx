@@ -677,7 +677,19 @@ export default function AdminPage() {
                         )}
                         <div className="flex-1">
                           <h3 className="font-semibold">{product.nameFr}</h3>
-                          <p className="text-sm text-gray-600">{formatPrice(product.price)}</p>
+                          {product.isFeatured && product.discountedPrice && product.originalPrice ? (
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-2">
+                                <p className="text-sm font-bold text-red-600">{formatPrice(product.discountedPrice)}</p>
+                                <p className="text-xs text-gray-400 line-through">{formatPrice(product.originalPrice)}</p>
+                              </div>
+                              <p className="text-xs text-red-600">
+                                Économie: {formatPrice(product.originalPrice - product.discountedPrice)}
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-gray-600">{formatPrice(product.price)}</p>
+                          )}
                           {product.subcategoryId && (
                             <p className="text-xs text-gray-500">
                               {getSubcategoryName(product.subcategoryId)}

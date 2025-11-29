@@ -1,21 +1,25 @@
 import { useParams, Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { useProducts } from '@/hooks/useProducts';
+import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageCircle } from 'lucide-react';
+import { ArrowLeft, MessageCircle, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { generateWhatsAppLink } from '@/lib/utils-bike';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ProductImageGallery } from '@/components/ProductImageGallery';
 import { productService } from '@/services/productService';
+import { toast } from 'sonner';
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
   const { t, language } = useLanguage();
   const { products, loading } = useProducts();
+  const { addToCart } = useCart();
+  const [quantity, setQuantity] = useState(1);
 
   if (loading) {
     return (
@@ -107,7 +111,7 @@ export default function ProductPage() {
               </div>
 
               <div className="mb-4 md:mb-6 break-words">
-                {product.isFeatured && product.discountedPrice && product.originalPrice ? (
+                {product.discountedPrice && product.originalPrice ? (
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-3">
                       <span className="text-3xl md:text-4xl font-bold text-red-600">
@@ -152,6 +156,52 @@ export default function ProductPage() {
               )}
 
               <div className="space-y-3 md:space-y-4">
+                {/* Quantity Selector and Add to Cart */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-medium">{t.cart.quantity}:</span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        disabled={!product.isAvailable}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="w-12 text-center font-medium">{quantity}</span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setQuantity(quantity + 1)}
+                        disabled={!product.isAvailable}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Button
+                    size="lg"
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    disabled={!product.isAvailable}
+                    onClick={() => {
+                      addToCart({
+                        productId: product.id,
+                        name: productName,
+                        price: product.price,
+                        image: product.images?.[0] || '',
+                        discountedPrice: product.discountedPrice,
+                        originalPrice: product.originalPrice,
+                      }, quantity);
+                      toast.success(`${productName} ${t.cart.addToCart}`);
+                    }}
+                  >
+                    <ShoppingCart className="mr-2 h-5 w-5" />
+                    {t.cart.addToCart}
+                  </Button>
+                </div>
+
                 <Button
                   asChild
                   size="lg"
@@ -191,18 +241,18 @@ export default function ProductPage() {
                     }
 
                     return (
-                      <Link key={relatedProduct.id} to={`/product/${relatedProduct.id}`}>
-                        <Card className="hover:shadow-lg transition-shadow">
-                          <div className="aspect-square overflow-hidden bg-gray-100">
+                      <Link key={relatedProduct.id} to={`/product/${relatedProduct.id}`} className="group">
+                        <Card className="hover:shadow-lg transition-shadow h-full flex flex-col">
+                          <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
                             <img
                               src={relatedProduct.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
                               alt={relatedProductName}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           </div>
-                          <CardContent className="p-3">
-                            <h3 className="font-semibold text-sm mb-1 line-clamp-2">{relatedProductName}</h3>
-                            <p className="text-green-600 font-bold">{relatedProduct.price.toLocaleString()} DH</p>
+                          <CardContent className="p-3 flex-1 flex flex-col">
+                            <h3 className="font-semibold text-sm mb-1 line-clamp-2 flex-1">{relatedProductName}</h3>
+                            <p className="text-green-600 font-bold mt-auto">{relatedProduct.price.toLocaleString()} DH</p>
                           </CardContent>
                         </Card>
                       </Link>

@@ -28,7 +28,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
       <Header />
-      
+
       <main className="flex-1 overflow-hidden">
         {/* Hero */}
         <section className="relative bg-gradient-to-r from-green-600 to-green-800 text-white py-12 md:py-16 overflow-hidden">
@@ -73,7 +73,6 @@ export default function ContactPage() {
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           placeholder={t.contact.emailPlaceholder}
-                          required
                           className="text-sm md:text-base"
                         />
                       </div>
