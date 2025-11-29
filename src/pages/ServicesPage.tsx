@@ -101,17 +101,17 @@ export default function ServicesPage() {
               {servicesData.map((service) => {
                 const translation = getServiceTranslation(service.id);
                 return (
-                  <Card key={service.id} className="hover:shadow-lg transition-shadow overflow-hidden">
+                  <Card key={service.id} className="hover:shadow-lg transition-shadow overflow-hidden h-full flex flex-col">
                     <CardHeader className="p-4 md:p-6">
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-3xl md:text-4xl flex-shrink-0">{service.icon}</span>
                         <CardTitle className="text-lg md:text-xl break-words">{translation.title}</CardTitle>
                       </div>
-                      <CardDescription className="text-xs md:text-sm leading-relaxed break-words">
+                      <CardDescription className="text-xs md:text-sm leading-relaxed break-words flex-1">
                         {translation.desc}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="p-4 md:p-6 pt-0">
+                    <CardContent className="p-4 md:p-6 pt-0 mt-auto">
                       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <span className="text-base md:text-lg font-bold text-green-600 break-words">
                           {formatPrice(service.price)}
@@ -180,6 +180,7 @@ export default function ServicesPage() {
                       <div>
                         <Label htmlFor="service" className="text-sm md:text-base">{t.admin.service}</Label>
                         <Select
+                          key={formData.service}
                           value={formData.service}
                           onValueChange={(value) => setFormData({ ...formData, service: value })}
                           required

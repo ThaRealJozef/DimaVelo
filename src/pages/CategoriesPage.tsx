@@ -29,6 +29,11 @@ export default function CategoriesPage() {
 
   // Set selected subcategory from URL
   useEffect(() => {
+    if (categorySlug === 'promotions') {
+      navigate('/promotions', { replace: true });
+      return;
+    }
+
     if (subcategorySlug) {
       const sub = categorySubcategories.find(s => s.slug === subcategorySlug);
       if (sub) {
@@ -37,7 +42,7 @@ export default function CategoriesPage() {
     } else {
       setSelectedSubcategory('all');
     }
-  }, [subcategorySlug, categorySlug]);
+  }, [subcategorySlug, categorySlug, navigate]);
 
   // Filter products
   const filteredProducts = products.filter((product) => {
@@ -122,23 +127,23 @@ export default function CategoriesPage() {
               {categories.map((category) => (
                 <Link
                   key={category.id}
-                  to={`/categories/${category.slug}`}
+                  to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`}
                   className="group"
                 >
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <div className="aspect-square overflow-hidden bg-gray-100">
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+                    <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
                       <img
                         src={category.imageUrl}
                         alt={getCategoryName(category)}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
-                    <CardContent className="p-3 md:p-4">
+                    <CardContent className="p-3 md:p-4 flex-1 flex flex-col">
                       <h3 className="font-semibold text-base md:text-lg mb-2 break-words">{getCategoryName(category)}</h3>
-                      <p className="text-xs md:text-sm text-gray-600 mb-3 break-words">
+                      <p className="text-xs md:text-sm text-gray-600 mb-3 break-words flex-1">
                         {language === 'en' ? category.descriptionEn : language === 'ar' ? category.descriptionAr : category.descriptionFr}
                       </p>
-                      <Button size="sm" className="w-full bg-green-600 hover:bg-green-700">
+                      <Button size="sm" className="w-full bg-green-600 hover:bg-green-700 mt-auto">
                         {t.categories.viewProducts}
                       </Button>
                     </CardContent>
@@ -243,20 +248,20 @@ export default function CategoriesPage() {
                     to={`/product/${product.id}`}
                     className="group"
                   >
-                    <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
-                      <div className="aspect-square overflow-hidden bg-gray-100">
+                    <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+                      <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
                         <img
                           src={product.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
                           alt={getProductName(product)}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
-                      <CardContent className="p-3 md:p-4">
+                      <CardContent className="p-3 md:p-4 flex-1 flex flex-col">
                         <h3 className="font-semibold text-base md:text-lg mb-2 break-words">{getProductName(product)}</h3>
                         <p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2 break-words">
                           {getProductDescription(product)}
                         </p>
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mt-auto">
                           <span className="text-lg md:text-xl font-bold text-green-600 break-words">
                             {product.price.toLocaleString()} DH
                           </span>

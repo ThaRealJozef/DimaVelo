@@ -113,13 +113,19 @@ export function Header() {
 
                   return (
                     <div key={category.id} className="group/item relative">
-                      <Link
-                        to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`}
-                        className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 text-sm"
-                      >
-                        <span>{categoryName}</span>
-                        {subs.length > 0 && <ChevronRight className="h-4 w-4" />}
-                      </Link>
+                      {subs.length > 0 ? (
+                        <div className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 text-sm cursor-default">
+                          <span>{categoryName}</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </div>
+                      ) : (
+                        <Link
+                          to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`}
+                          className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 text-sm"
+                        >
+                          <span>{categoryName}</span>
+                        </Link>
+                      )}
 
                       {/* Subcategories Dropdown */}
                       {subs.length > 0 && (
@@ -146,8 +152,8 @@ export function Header() {
 
           {/* Services Dropdown */}
           <div className="group relative">
-            <Button variant="ghost" asChild className="text-sm lg:text-base cursor-pointer">
-              <Link to="/services">{t.nav.services}</Link>
+            <Button variant="ghost" className="text-sm lg:text-base">
+              {t.nav.services}
             </Button>
             <div className="absolute left-0 top-full pt-2 hidden group-hover:block z-50">
               <div className="bg-white rounded-lg shadow-lg border py-2 min-w-[220px]">
@@ -274,7 +280,8 @@ export function Header() {
                         </Button>
                         <h2 className="text-lg font-semibold">{t.nav.categories}</h2>
                       </div>
-                      <div className="p-4 space-y-2">
+                      <div className="p-4 space-y-4">
+
                         {sortedCategories.map((category) => {
                           const subs = getCategorySubcategories(category.id);
                           const categoryName = getCategoryName(category.id);
@@ -359,6 +366,7 @@ export function Header() {
                         <h2 className="text-lg font-semibold">{t.nav.services}</h2>
                       </div>
                       <div className="p-4 space-y-4">
+
                         {servicesData.map((service) => {
                           const serviceTranslation = t.services?.[service.id as keyof typeof t.services] || service.id;
                           return (

@@ -14,9 +14,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const { t } = useLanguage();
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
       <Link to={`/product/${product.id}`}>
-        <div className="aspect-square overflow-hidden bg-gray-100">
+        <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
           <img
             src={product.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
             alt={product.nameFr}
@@ -24,14 +24,14 @@ export function ProductCard({ product }: ProductCardProps) {
           />
         </div>
       </Link>
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex-1 flex flex-col">
         <Link to={`/product/${product.id}`}>
-          <h3 className="font-semibold text-lg mb-2 hover:text-blue-600 transition-colors">
+          <h3 className="font-semibold text-lg mb-2 hover:text-blue-600 transition-colors line-clamp-1">
             {product.nameFr}
           </h3>
         </Link>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.descriptionFr}</p>
-        <div className="flex items-center justify-between">
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2 flex-1">{product.descriptionFr}</p>
+        <div className="flex items-center justify-between mt-auto">
           {product.isFeatured && product.discountedPrice && product.originalPrice ? (
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
           </Badge>
         </div>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-4 pt-0 mt-auto">
         <Button asChild className="w-full">
           <Link to={`/product/${product.id}`}>{t.common.viewDetails}</Link>
         </Button>

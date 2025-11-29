@@ -63,8 +63,8 @@ export function CategoriesCarousel({ categories, getCategoryName, getCategoryDes
                                 to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`}
                                 className="group block h-full"
                             >
-                                <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full">
-                                    <div className="aspect-square overflow-hidden bg-gray-100">
+                                <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+                                    <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
                                         <img
                                             src={category.imageUrl}
                                             alt={getCategoryName(category)}
@@ -74,11 +74,11 @@ export function CategoriesCarousel({ categories, getCategoryName, getCategoryDes
                                             }}
                                         />
                                     </div>
-                                    <CardContent className="p-3 md:p-4">
+                                    <CardContent className="p-3 md:p-4 flex-1 flex flex-col">
                                         <h3 className="font-semibold text-base md:text-lg mb-2 break-words">
                                             {getCategoryName(category)}
                                         </h3>
-                                        <p className="text-xs md:text-sm text-gray-600 break-words">
+                                        <p className="text-xs md:text-sm text-gray-600 break-words flex-1">
                                             {getCategoryDescription(category)}
                                         </p>
                                     </CardContent>
