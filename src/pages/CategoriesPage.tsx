@@ -261,14 +261,31 @@ export default function CategoriesPage() {
                         <p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2 break-words">
                           {getProductDescription(product)}
                         </p>
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mt-auto">
-                          <span className="text-lg md:text-xl font-bold text-green-600 break-words">
-                            {product.price.toLocaleString()} DH
-                          </span>
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
-                            {t.common.viewDetails}
-                          </Button>
+                        <div className="flex flex-col gap-1 mt-auto">
+                          {product.discountedPrice && product.originalPrice ? (
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-lg md:text-xl font-bold text-red-600">
+                                  {product.discountedPrice.toLocaleString()} DH
+                                </span>
+                                <span className="text-sm text-gray-400 line-through">
+                                  {product.originalPrice.toLocaleString()} DH
+                                </span>
+                              </div>
+                              <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded w-fit">
+                                {(product.originalPrice - product.discountedPrice).toLocaleString()} DH d'économie
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-lg md:text-xl font-bold text-green-600 break-words">
+                              {product.price.toLocaleString()} DH
+                            </span>
+                          )}
                         </div>
+                        <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
+                          {t.common.viewDetails}
+                        </Button>
+
                       </CardContent>
                     </Card>
                   </Link>
@@ -283,9 +300,9 @@ export default function CategoriesPage() {
             </div>
           </div>
         </div>
-      </main>
+      </main >
 
       <Footer />
-    </div>
+    </div >
   );
 }

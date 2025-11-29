@@ -32,7 +32,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
         <p className="text-gray-600 text-sm mb-3 line-clamp-2 flex-1">{product.descriptionFr}</p>
         <div className="flex items-center justify-between mt-auto">
-          {product.isFeatured && product.discountedPrice && product.originalPrice ? (
+          {product.discountedPrice && product.originalPrice ? (
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold text-red-600">{formatPrice(product.discountedPrice)}</span>
@@ -43,7 +43,7 @@ export function ProductCard({ product }: ProductCardProps) {
               </span>
             </div>
           ) : (
-            <span className="text-xl font-bold text-blue-600">{formatPrice(product.price)}</span>
+            <span className="text-xl font-bold text-green-600">{formatPrice(product.price)}</span>
           )}
           <Badge variant={product.isAvailable ? 'default' : 'secondary'}>
             {product.isAvailable ? t.product.inStock : t.product.outOfStock}
