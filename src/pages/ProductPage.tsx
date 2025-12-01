@@ -7,12 +7,12 @@ import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageCircle, ShoppingCart, Plus, Minus } from 'lucide-react';
-import { generateWhatsAppLink } from '@/lib/utils-bike';
+import { ArrowLeft, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { ProductImageGallery } from '@/components/ProductImageGallery';
 import { productService } from '@/services/productService';
 import { toast } from 'sonner';
+import { DeliveryInfo } from '@/components/DeliveryInfo';
 
 export default function ProductPage() {
   const { id } = useParams<{ id: string }>();
@@ -75,7 +75,6 @@ export default function ProductPage() {
 
   const productName = getLocalizedField('name');
   const productDescription = getLocalizedField('description');
-  const whatsappLink = generateWhatsAppLink(productName, product.price, product.id);
 
   // NOTE: View tracking disabled - causes crashes, needs debugging
   // TODO: Fix incrementViewCount to work without breaking the page
@@ -202,21 +201,13 @@ export default function ProductPage() {
                   </Button>
                 </div>
 
-                <Button
-                  asChild
-                  size="lg"
-                  className="w-full bg-green-600 hover:bg-green-700"
-                  disabled={!product.isAvailable}
-                >
-                  <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="mr-2 h-5 w-5" />
-                    {t.product.contactWhatsApp}
-                  </a>
-                </Button>
-
                 <Button asChild size="lg" variant="outline" className="w-full">
                   <Link to="/contact">{t.product.moreInfo}</Link>
                 </Button>
+
+                <div className="pt-4">
+                  <DeliveryInfo variant="compact" />
+                </div>
               </div>
             </div>
           </div>

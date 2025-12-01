@@ -52,6 +52,16 @@ export function CategoriesCarousel({ categories, getCategoryName, getCategoryDes
 
     return (
         <div className="relative">
+            {/* Left fade gradient indicator */}
+            {(language === 'ar' ? nextBtnEnabled : prevBtnEnabled) && (
+                <div className="absolute left-0 top-0 bottom-0 w-8 md:w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+            )}
+
+            {/* Right fade gradient indicator */}
+            {(language === 'ar' ? prevBtnEnabled : nextBtnEnabled) && (
+                <div className="absolute right-0 top-0 bottom-0 w-8 md:w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+            )}
+
             <div className="overflow-hidden" ref={emblaRef}>
                 <div className="flex gap-3 md:gap-6">
                     {categories.map((category) => (
@@ -89,12 +99,12 @@ export function CategoriesCarousel({ categories, getCategoryName, getCategoryDes
                 </div>
             </div>
 
-            {/* Navigation Buttons */}
+            {/* Navigation Buttons - Desktop */}
             {(language === 'ar' ? nextBtnEnabled : prevBtnEnabled) && (
                 <Button
                     variant="outline"
                     size="icon"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white shadow-lg hover:bg-gray-50 hidden md:flex"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 bg-white shadow-lg hover:bg-gray-50 hidden md:flex"
                     onClick={language === 'ar' ? scrollNext : scrollPrev}
                     disabled={language === 'ar' ? !nextBtnEnabled : !prevBtnEnabled}
                 >
@@ -106,11 +116,36 @@ export function CategoriesCarousel({ categories, getCategoryName, getCategoryDes
                 <Button
                     variant="outline"
                     size="icon"
-                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white shadow-lg hover:bg-gray-50 hidden md:flex"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 bg-white shadow-lg hover:bg-gray-50 hidden md:flex"
                     onClick={language === 'ar' ? scrollPrev : scrollNext}
                     disabled={language === 'ar' ? !prevBtnEnabled : !nextBtnEnabled}
                 >
                     <ChevronRight className="h-4 w-4" />
+                </Button>
+            )}
+
+            {/* Navigation Buttons - Mobile (smaller, positioned inside) */}
+            {(language === 'ar' ? nextBtnEnabled : prevBtnEnabled) && (
+                <Button
+                    variant="outline"
+                    size="icon"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm shadow-md hover:bg-white h-8 w-8 md:hidden"
+                    onClick={language === 'ar' ? scrollNext : scrollPrev}
+                    disabled={language === 'ar' ? !nextBtnEnabled : !prevBtnEnabled}
+                >
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                </Button>
+            )}
+
+            {(language === 'ar' ? prevBtnEnabled : nextBtnEnabled) && (
+                <Button
+                    variant="outline"
+                    size="icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm shadow-md hover:bg-white h-8 w-8 md:hidden"
+                    onClick={language === 'ar' ? scrollPrev : scrollNext}
+                    disabled={language === 'ar' ? !prevBtnEnabled : !nextBtnEnabled}
+                >
+                    <ChevronRight className="h-3.5 w-3.5" />
                 </Button>
             )}
         </div>

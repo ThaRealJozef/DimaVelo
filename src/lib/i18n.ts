@@ -1,4 +1,4 @@
-export type Language = 'fr' | 'en' | 'ar';
+﻿export type Language = 'fr' | 'en' | 'ar';
 
 export const translations = {
   fr: {
@@ -195,7 +195,21 @@ export const translations = {
         phonePlaceholder: '+212 6XX XX XX XX',
         addressPlaceholder: 'Votre adresse complète',
         notesPlaceholder: 'Instructions de livraison...',
+        city: 'Ville',
+        selectCity: 'Sélectionnez votre ville',
+        deliveryFee: 'Frais de livraison',
       },
+    },
+    // Delivery
+    delivery: {
+      title: 'Livraison',
+      cashOnDelivery: 'Paiement à la livraison',
+      deliveryTime: 'Livraison en 48h',
+      deliveryArea: 'Partout au Maroc',
+      freeShipping: 'Livraison gratuite',
+      freeShippingCities: 'Rabat, Salé, Kénitra',
+      info: 'Informations de livraison',
+      available: 'Disponible',
     },
     // Admin
     admin: {
@@ -208,6 +222,7 @@ export const translations = {
       quickLinks: 'Liens Rapides',
       followUs: 'Suivez-Nous',
       rights: 'Tous droits réservés',
+      deliveryInfo: 'Livraison',
     },
   },
   en: {
@@ -404,7 +419,21 @@ export const translations = {
         phonePlaceholder: '+212 6XX XX XX XX',
         addressPlaceholder: 'Your full address',
         notesPlaceholder: 'Delivery instructions...',
+        city: 'City',
+        selectCity: 'Select your city',
+        deliveryFee: 'Delivery Fee',
       },
+    },
+    // Delivery
+    delivery: {
+      title: 'Delivery',
+      cashOnDelivery: 'Cash on Delivery',
+      deliveryTime: '48-hour delivery',
+      deliveryArea: 'All across Morocco',
+      freeShipping: 'Free shipping',
+      freeShippingCities: 'Rabat, Sale, Kenitra',
+      info: 'Delivery information',
+      available: 'Available',
     },
     // Admin
     admin: {
@@ -417,6 +446,7 @@ export const translations = {
       quickLinks: 'Quick Links',
       followUs: 'Follow Us',
       rights: 'All rights reserved',
+      deliveryInfo: 'Delivery',
     },
   },
   ar: {
@@ -613,7 +643,21 @@ export const translations = {
         phonePlaceholder: '+212 6XX XX XX XX',
         addressPlaceholder: 'عنوانك الكامل',
         notesPlaceholder: 'تعليمات التوصيل...',
+        city: 'المدينة',
+        selectCity: 'اختر مدينتك',
+        deliveryFee: 'رسوم التوصيل',
       },
+    },
+    // Delivery
+    delivery: {
+      title: 'التوصيل',
+      cashOnDelivery: 'الدفع عند الاستلام',
+      deliveryTime: 'التوصيل في 48 ساعة',
+      deliveryArea: 'في جميع أنحاء المغرب',
+      freeShipping: 'توصيل مجاني',
+      freeShippingCities: 'الرباط، سلا، القنيطرة',
+      info: 'معلومات التوصيل',
+      available: 'متاح',
     },
     // Admin
     admin: {
@@ -626,6 +670,7 @@ export const translations = {
       quickLinks: 'روابط سريعة',
       followUs: 'تابعنا',
       rights: 'جميع الحقوق محفوظة',
+      deliveryInfo: 'التوصيل',
     },
   },
 };

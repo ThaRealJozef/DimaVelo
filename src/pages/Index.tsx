@@ -10,6 +10,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { ArrowRight, Wrench, ShoppingCart, Phone } from 'lucide-react';
 import { CategoriesCarousel } from '@/components/CategoriesCarousel';
 import { FeaturedProductsGrid } from '@/components/FeaturedProductsGrid';
+import { DeliveryInfo } from '@/components/DeliveryInfo';
 
 export default function Index() {
   const { t, language } = useLanguage();
@@ -148,6 +149,13 @@ export default function Index() {
                 <Link to="/categories">{t.common.viewAll}</Link>
               </Button>
             </div>
+          </div>
+        </section>
+
+        {/* Delivery Info Section */}
+        <section className="py-8 md:py-12 bg-white overflow-hidden">
+          <div className="container px-4">
+            <DeliveryInfo variant="full" />
           </div>
         </section>
 

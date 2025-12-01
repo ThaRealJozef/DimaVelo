@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Mail, MapPin, Phone } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { DeliveryInfo } from '@/components/DeliveryInfo';
 
 export function Footer() {
   const { t } = useLanguage();
@@ -8,14 +9,14 @@ export function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-300 overflow-x-hidden">
       <div className="container py-8 md:py-12 px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8">
           {/* Logo et Description */}
           <div className="space-y-4">
             <div className="flex items-center">
               <div className="bg-white/95 p-2 md:p-3 rounded-lg">
-                <img 
-                  src="/logo.png" 
-                  alt="Dima Vélo Logo" 
+                <img
+                  src="/logo.png"
+                  alt="Dima Vélo Logo"
                   className="h-12 md:h-16 w-auto object-contain"
                 />
               </div>
@@ -75,12 +76,18 @@ export function Footer() {
             </ul>
           </div>
 
+          {/* Delivery Info */}
+          <div>
+            <h3 className="font-semibold text-white mb-3 md:mb-4">{t.footer.deliveryInfo}</h3>
+            <DeliveryInfo variant="compact" className="text-gray-300" />
+          </div>
+
           {/* Réseaux Sociaux */}
           <div>
             <h3 className="font-semibold text-white mb-3 md:mb-4">{t.footer.followUs}</h3>
             <div className="flex gap-4">
               <a
-                href="https://facebook.com"
+                href="https://facebook.com/DimaVeloTeam"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-green-400 transition-colors"
@@ -89,7 +96,7 @@ export function Footer() {
                 <Facebook className="h-5 w-5" />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://instagram.com/DimaVeloTeam"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-green-400 transition-colors"
