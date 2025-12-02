@@ -139,13 +139,19 @@ export default function ProductPage() {
               </div>
 
               <div className="prose max-w-none mb-6 md:mb-8">
-                <h2 className="text-lg md:text-xl font-semibold mb-3 break-words">{t.product.description}</h2>
+                <h2 className="text-lg md:text-xl font-bold mb-4 break-words text-gray-900 flex items-center gap-2">
+                  <span className="w-1 h-6 bg-green-600 rounded-full inline-block"></span>
+                  {t.product.description}
+                </h2>
                 <p className="text-gray-600 text-sm md:text-base break-words">{productDescription}</p>
               </div>
 
               {product.specifications && Object.keys(product.specifications).length > 0 && (
                 <div className="mb-6 md:mb-8">
-                  <h2 className="text-lg md:text-xl font-semibold mb-3 break-words">{t.product.specifications}</h2>
+                  <h2 className="text-lg md:text-xl font-bold mb-4 break-words text-gray-900 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-green-600 rounded-full inline-block"></span>
+                    {t.product.specifications}
+                  </h2>
                   <Card className="overflow-hidden">
                     <CardContent className="p-3 md:p-4">
                       <dl className="space-y-2">
@@ -265,18 +271,22 @@ export default function ProductPage() {
                     }
 
                     return recommendations.map((relatedProduct) => {
-                      // Safely get localized name
+                      // Safely get localized name and description
                       let relatedProductName = relatedProduct.nameFr;
+                      let relatedProductDescription = relatedProduct.descriptionFr;
+
                       if (language === 'ar' && relatedProduct.nameAr) {
                         relatedProductName = relatedProduct.nameAr;
+                        relatedProductDescription = relatedProduct.descriptionAr || relatedProduct.descriptionFr;
                       } else if (language === 'en' && relatedProduct.nameEn) {
                         relatedProductName = relatedProduct.nameEn;
+                        relatedProductDescription = relatedProduct.descriptionEn || relatedProduct.descriptionFr;
                       }
 
                       return (
                         <CarouselItem key={relatedProduct.id} className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4">
-                          <Link to={`/product/${relatedProduct.id}`} className="group h-auto block">
-                            <Card className="hover:shadow-lg transition-shadow h-auto flex flex-col">
+                          <Link to={`/product/${relatedProduct.id}`} className="group">
+                            <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
                               <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0 relative">
                                 <img
                                   src={relatedProduct.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
@@ -294,24 +304,35 @@ export default function ProductPage() {
                                   </Badge>
                                 )}
                               </div>
-                              <CardContent className="p-3 flex-1 flex flex-col">
-                                <h3 className="font-semibold text-sm mb-1 line-clamp-2 flex-1">{relatedProductName}</h3>
-                                <div className="mt-auto">
+                              <CardContent className="p-3 md:p-4 flex-1 flex flex-col">
+                                <h3 className="font-semibold text-base md:text-lg mb-2 break-words">{relatedProductName}</h3>
+                                <p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2 break-words">
+                                  {relatedProductDescription}
+                                </p>
+                                <div className="flex flex-col gap-1 mt-auto">
                                   {relatedProduct.discountedPrice && relatedProduct.originalPrice ? (
-                                    <div className="flex flex-col">
-                                      <span className="text-green-600 font-bold">
-                                        {relatedProduct.discountedPrice.toLocaleString()} DH
-                                      </span>
-                                      <span className="text-xs text-gray-400 line-through">
-                                        {relatedProduct.originalPrice.toLocaleString()} DH
+                                    <div className="flex flex-col gap-1">
+                                      <div className="flex items-center gap-2 flex-wrap">
+                                        <span className="text-lg md:text-xl font-bold text-red-600">
+                                          {relatedProduct.discountedPrice.toLocaleString()} DH
+                                        </span>
+                                        <span className="text-sm text-gray-400 line-through">
+                                          {relatedProduct.originalPrice.toLocaleString()} DH
+                                        </span>
+                                      </div>
+                                      <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded w-fit">
+                                        {(relatedProduct.originalPrice - relatedProduct.discountedPrice).toLocaleString()} DH {language === 'ar' ? 'توفير' : language === 'en' ? 'off' : "d'économie"}
                                       </span>
                                     </div>
                                   ) : (
-                                    <p className="text-green-600 font-bold">
+                                    <span className="text-lg md:text-xl font-bold text-green-600 break-words">
                                       {relatedProduct.price.toLocaleString()} DH
-                                    </p>
+                                    </span>
                                   )}
                                 </div>
+                                <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full sm:w-auto mt-3">
+                                  {t.common.viewDetails}
+                                </Button>
                               </CardContent>
                             </Card>
                           </Link>
@@ -320,10 +341,8 @@ export default function ProductPage() {
                     });
                   })()}
                 </CarouselContent>
-                <div className="hidden md:block">
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </div>
+                <CarouselPrevious className="left-2 md:-left-12" />
+                <CarouselNext className="right-2 md:-right-12" />
               </Carousel>
             </div>
           )}

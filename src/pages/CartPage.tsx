@@ -167,17 +167,19 @@ ${customerInfo.notes ? `NOTES:\n${customerInfo.notes}\n\n` : ''}Merci d'avoir ch
                                     <CardContent className="p-4 md:p-6">
                                         <div className="flex gap-4">
                                             {/* Product Image */}
-                                            <div className="flex-shrink-0">
+                                            <Link to={`/product/${item.productId}`} className="flex-shrink-0">
                                                 <img
                                                     src={item.image}
                                                     alt={item.name}
-                                                    className="w-20 h-20 md:w-24 md:h-24 object-cover rounded"
+                                                    className="w-20 h-20 md:w-24 md:h-24 object-cover rounded hover:opacity-80 transition-opacity cursor-pointer"
                                                 />
-                                            </div>
+                                            </Link>
 
                                             {/* Product Info */}
                                             <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold text-lg mb-2 break-words">{item.name}</h3>
+                                                <Link to={`/product/${item.productId}`}>
+                                                    <h3 className="font-semibold text-lg mb-2 break-words hover:text-green-600 transition-colors cursor-pointer">{item.name}</h3>
+                                                </Link>
 
                                                 <div className="flex items-center gap-4 mb-3">
                                                     {item.discountedPrice && item.originalPrice ? (
@@ -247,9 +249,12 @@ ${customerInfo.notes ? `NOTES:\n${customerInfo.notes}\n\n` : ''}Merci d'avoir ch
                             {/* Delivery Information */}
                             <DeliveryInfo variant="full" className="mb-6" />
 
-                            <Card className="sticky top-24">
+                            <Card className="sticky top-24 border-green-100 shadow-md bg-gray-50/30">
                                 <CardContent className="p-6">
-                                    <h2 className="text-xl font-semibold mb-4">{t.cart.checkoutForm.title}</h2>
+                                    <h2 className="text-xl font-bold mb-2 text-gray-900 flex items-center gap-2">
+                                        <span className="w-1 h-6 bg-green-600 rounded-full inline-block"></span>
+                                        {t.cart.checkoutForm.title}
+                                    </h2>
                                     <p className="text-sm text-gray-600 mb-6">{t.cart.checkoutForm.subtitle}</p>
 
                                     <form onSubmit={handleCheckout} className="space-y-4">

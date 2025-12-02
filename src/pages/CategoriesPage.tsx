@@ -118,10 +118,15 @@ export default function CategoriesPage() {
       <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
         <Header />
 
-        <main className="flex-1 py-8 overflow-hidden">
-          <div className="container px-4">
-            <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 break-words">{t.categories.title}</h1>
-            <p className="text-gray-600 mb-6 md:mb-8 break-words">{t.categories.subtitle}</p>
+        <main className="flex-1 overflow-hidden">
+          <div className="bg-green-50/50 py-8 md:py-12 mb-8">
+            <div className="container px-4">
+              <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 break-words">{t.categories.title}</h1>
+              <p className="text-gray-600 max-w-2xl text-lg">{t.categories.subtitle}</p>
+            </div>
+          </div>
+
+          <div className="container px-4 pb-12">
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
               {categories.map((category) => (
@@ -163,24 +168,32 @@ export default function CategoriesPage() {
     <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
       <Header />
 
-      <main className="flex-1 py-8 overflow-hidden">
-        <div className="container px-4">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs md:text-sm text-gray-600 mb-4 md:mb-6 overflow-x-auto whitespace-nowrap pb-2">
-            <Link to="/" className="hover:text-green-600 flex-shrink-0">{t.nav.home}</Link>
-            <ChevronRight className="h-4 w-4 flex-shrink-0" />
-            <Link to="/categories" className="hover:text-green-600 flex-shrink-0">{t.categories.title}</Link>
-            <ChevronRight className="h-4 w-4 flex-shrink-0" />
-            <span className="text-gray-900 font-medium break-words">{getCategoryName(currentCategory)}</span>
-          </div>
+      <main className="flex-1 overflow-hidden">
+        <div className="bg-green-50/50 py-8 mb-8">
+          <div className="container px-4">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-xs md:text-sm text-gray-600 mb-4 md:mb-6 overflow-x-auto whitespace-nowrap pb-2">
+              <Link to="/" className="hover:text-green-600 flex-shrink-0">{t.nav.home}</Link>
+              <ChevronRight className="h-4 w-4 flex-shrink-0" />
+              <Link to="/categories" className="hover:text-green-600 flex-shrink-0">{t.categories.title}</Link>
+              <ChevronRight className="h-4 w-4 flex-shrink-0" />
+              <span className="text-gray-900 font-medium break-words">{getCategoryName(currentCategory)}</span>
+            </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 break-words">{getCategoryName(currentCategory)}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold break-words text-gray-900">{getCategoryName(currentCategory)}</h1>
+          </div>
+        </div>
+
+        <div className="container px-4 pb-12">
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-8">
             {/* Filters Sidebar */}
             <div className="lg:col-span-1">
               <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm lg:sticky lg:top-24 overflow-hidden">
-                <h2 className="font-semibold text-base md:text-lg mb-4 break-words">{t.categories.filters}</h2>
+                <h2 className="font-bold text-lg md:text-xl mb-6 break-words text-gray-900 flex items-center gap-2">
+                  <span className="w-1 h-6 bg-green-600 rounded-full inline-block"></span>
+                  {t.categories.filters}
+                </h2>
 
                 {/* Subcategory Filter */}
                 {categorySubcategories.length > 0 && (

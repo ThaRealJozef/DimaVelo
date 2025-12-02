@@ -42,10 +42,10 @@ export const translations = {
     // Home
     home: {
       hero: {
-        title: 'Bienvenue chez Dima Vélo',
-        subtitle: 'Votre magasin de vélos de confiance à Salé',
-        cta: 'Découvrez nos produits',
-        services: 'Nos services',
+        title: 'Votre Destination Vélo à Salé',
+        subtitle: 'Vélos neufs & d\'occasion • Livraison 48h partout au Maroc • Conseils d\'experts gratuits',
+        cta: 'Voir les vélos',
+        services: 'Réparation & Entretien',
       },
       categories: {
         title: 'Nos Catégories',
@@ -266,10 +266,10 @@ export const translations = {
     // Home
     home: {
       hero: {
-        title: 'Welcome to Dima Vélo',
-        subtitle: 'Your trusted bike shop in Salé',
-        cta: 'Discover our products',
-        services: 'Our services',
+        title: 'Your Bike Destination in Salé',
+        subtitle: 'New & Used Bikes • 48h Delivery Across Morocco • Free Expert Advice',
+        cta: 'Shop Bikes',
+        services: 'Repair & Maintenance',
       },
       categories: {
         title: 'Our Categories',
@@ -490,10 +490,10 @@ export const translations = {
     // Home
     home: {
       hero: {
-        title: 'مرحبا بكم في ديما فيلو',
-        subtitle: 'متجر الدراجات الموثوق في سلا',
-        cta: 'اكتشف منتجاتنا',
-        services: 'خدماتنا',
+        title: 'وجهتك للدراجات في سلا',
+        subtitle: 'دراجات جديدة ومستعملة • توصيل 48 ساعة في جميع أنحاء المغرب • استشارات مجانية',
+        cta: 'تسوق الدراجات',
+        services: 'الإصلاح والصيانة',
       },
       categories: {
         title: 'فئاتنا',

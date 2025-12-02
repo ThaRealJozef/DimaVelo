@@ -93,10 +93,10 @@ export default function Index() {
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 break-words">
                 {t.home.hero.title}
               </h1>
-              <p className="text-lg md:text-xl mb-6 md:mb-8 break-words">
+              <p className="text-lg md:text-xl mb-6 md:mb-8 break-words opacity-95">
                 {t.home.hero.subtitle}
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6">
                 <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto">
                   <Link to="/categories">
                     <ShoppingCart className="mr-2 h-5 w-5" />
@@ -109,6 +109,13 @@ export default function Index() {
                     {t.home.hero.services}
                   </Link>
                 </Button>
+              </div>
+
+              <div className="flex items-center gap-2 text-sm md:text-base opacity-90 hover:opacity-100 transition-opacity">
+                <Phone className="h-4 w-4" />
+                <Link to="/contact" className="hover:underline font-medium">
+                  {language === 'ar' ? 'تحتاج مساعدة؟ اتصل بنا' : language === 'en' ? 'Need help? Contact us' : 'Besoin d\'aide ? Contactez-nous'}
+                </Link>
               </div>
             </div>
           </div>

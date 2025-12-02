@@ -340,6 +340,13 @@ export function Header() {
               className="fixed inset-0 bg-white opacity-100 z-[9999] md:hidden"
               style={{ backgroundColor: '#ffffff', opacity: 1 }}
             >
+              {/* Logo - Top Left */}
+              <div className="absolute top-4 left-4 z-10">
+                <Link to="/" onClick={closeMobileMenu}>
+                  <img src="/logo.png" alt="Dima Vélo" className="h-20 w-auto" />
+                </Link>
+              </div>
+
               {/* Close Button - Top Right */}
               <div className="absolute top-4 right-4 z-10">
                 <Button
@@ -353,309 +360,338 @@ export function Header() {
                   <X className="h-8 w-8" />
                 </Button>
               </div>
+              {/* Menu Content - Creative Centered Design */}
+              <div className="relative h-full flex flex-col bg-gradient-to-br from-white via-green-50/30 to-white">
+                {/* Logo Section */}
+                <div className="pt-8 pb-6 px-6 border-b border-green-100/50 flex flex-col items-center">
+                  <h2 className="text-xl font-bold mb-4">Menu</h2>
+                </div>
 
-              {/* Menu Content - Centered Vertically, Left Aligned */}
-              <div className="flex items-center min-h-screen px-8 py-20 bg-white">
-                <div className="w-full max-w-md bg-white">
-                  <AnimatePresence mode="wait" custom={mobileView === 'main' ? -1 : 1}>
-                    {/* Main Menu */}
-                    {mobileView === 'main' && (
-                      <motion.div
-                        key="main"
-                        custom={-1}
-                        variants={mobileSlideVariants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.3 }}
-                        className="space-y-4"
-                      >
-                        <Button variant="ghost" asChild className="w-full justify-start text-2xl py-8">
-                          <Link to="/" onClick={closeMobileMenu}>{t.nav.home}</Link>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-between text-2xl py-8"
-                          onClick={goToCategoriesView}
-                        >
-                          <span>{t.nav.categories}</span>
-                          <ChevronRight className="h-6 w-6" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-between text-2xl py-8"
-                          onClick={goToServicesView}
-                        >
-                          <span>{t.nav.services}</span>
-                          <ChevronRight className="h-6 w-6" />
-                        </Button>
-                        <Button variant="ghost" asChild className="w-full justify-start text-2xl py-8">
-                          <Link to="/contact" onClick={closeMobileMenu}>{t.nav.contact}</Link>
-                        </Button>
-                      </motion.div>
-                    )}
+                {/* Navigation Section - Centered */}
+                <div className="flex-1 flex items-center justify-center px-6 py-8">
+                  <div className="w-full max-w-md">
+                    <AnimatePresence mode="wait" custom={mobileView === 'main' ? -1 : 1}>
+                      {/* Main Menu */}
+                      {mobileView === 'main' && (
+                        <motion.div
+                          key="main"
+                          custom={-1}
+                          variants={mobileSlideVariants}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.3 }}
+                          className="space-y-1">
 
-                    {/* Categories View */}
-                    {mobileView === 'categories' && (
-                      <motion.div
-                        key="categories"
-                        custom={1}
-                        variants={mobileSlideVariants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.3 }}
-                        className="h-full"
-                      >
-                        <div className="sticky top-0 bg-white border-b p-4 flex items-center gap-3">
-                          <Button variant="ghost" size="icon" onClick={goBackToMain}>
-                            <ChevronLeft className="h-5 w-5" />
+                          <Button variant="ghost" asChild className="w-full justify-start text-xl sm:text-2xl py-5 hover:bg-green-50 relative group overflow-hidden">
+                            <Link to="/" onClick={closeMobileMenu}>
+                              <span className="relative z-10">{t.nav.home}</span>
+                              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </Link>
                           </Button>
-                          <h2 className="text-lg font-semibold">{t.nav.categories}</h2>
-                        </div>
-                        <div className="p-4 space-y-4">
 
-                          {sortedCategories.map((category) => {
-                            const subs = getCategorySubcategories(category.id);
-                            const categoryName = getCategoryName(category.id);
+                          {/* 3D Separator */}
+                          <div className="relative py-2">
+                            <div className="w-full border-t-2" style={{ borderImage: 'linear-gradient(to right, transparent, rgb(187 247 208), transparent) 1', boxShadow: '0 2px 4px -1px rgba(34, 197, 94, 0.15)' }} />
+                          </div>
 
-                            return (
-                              <div key={category.id}>
-                                {subs.length > 0 ? (
-                                  <Button
-                                    variant="ghost"
-                                    className={`w-full justify-between text-2xl py-8 ${category.slug === 'promotions' ? 'text-red-600 hover:text-red-700' : ''}`}
-                                    onClick={() => goToSubcategoriesView(category.id)}
-                                  >
-                                    <span>{categoryName}</span>
-                                    <ChevronRight className="h-6 w-6" />
-                                  </Button>
-                                ) : (
-                                  <Button variant="ghost" asChild className={`w-full justify-start text-2xl py-8 ${category.slug === 'promotions' ? 'text-red-600 hover:text-red-700' : ''}`}>
-                                    <Link
-                                      to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`}
-                                      onClick={closeMobileMenu}
+                          <Button variant="ghost" className="w-full justify-between text-xl sm:text-2xl py-5 hover:bg-green-50 relative group overflow-hidden" onClick={goToCategoriesView}>
+                            <span className="relative z-10">{t.nav.categories}</span>
+                            <ChevronRight className="h-6 w-6 relative z-10 group-hover:translate-x-1 transition-transform" />
+                            <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </Button>
+
+                          {/* 3D Separator */}
+                          <div className="relative py-2">
+                            <div className="w-full border-t-2" style={{ borderImage: 'linear-gradient(to right, transparent, rgb(187 247 208), transparent) 1', boxShadow: '0 2px 4px -1px rgba(34, 197, 94, 0.15)' }} />
+                          </div>
+
+                          <Button variant="ghost" className="w-full justify-between text-xl sm:text-2xl py-5 hover:bg-green-50 relative group overflow-hidden" onClick={goToServicesView}>
+                            <span className="relative z-10">{t.nav.services}</span>
+                            <ChevronRight className="h-6 w-6 relative z-10 group-hover:translate-x-1 transition-transform" />
+                            <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </Button>
+
+                          {/* 3D Separator */}
+                          <div className="relative py-2">
+                            <div className="w-full border-t-2" style={{ borderImage: 'linear-gradient(to right, transparent, rgb(187 247 208), transparent) 1', boxShadow: '0 2px 4px -1px rgba(34, 197, 94, 0.15)' }} />
+                          </div>
+
+                          <Button variant="ghost" asChild className="w-full justify-start text-xl sm:text-2xl py-5 hover:bg-green-50 relative group overflow-hidden">
+                            <Link to="/contact" onClick={closeMobileMenu}>
+                              <span className="relative z-10">{t.nav.contact}</span>
+                              <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </Link>
+                          </Button>
+                        </motion.div>
+                      )}
+
+                      {/* Categories View */}
+                      {mobileView === 'categories' && (
+                        <motion.div
+                          key="categories"
+                          custom={1}
+                          variants={mobileSlideVariants}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.3 }}
+                          className="h-full"
+                        >
+                          <div className="sticky top-0 bg-white border-b p-4 flex items-center gap-3">
+                            <Button variant="ghost" size="icon" onClick={goBackToMain}>
+                              <ChevronLeft className="h-5 w-5" />
+                            </Button>
+                            <h2 className="text-lg font-semibold">{t.nav.categories}</h2>
+                          </div>
+                          <div className="p-4 space-y-2">
+
+                            {sortedCategories.map((category) => {
+                              const subs = getCategorySubcategories(category.id);
+                              const categoryName = getCategoryName(category.id);
+
+                              return (
+                                <div key={category.id}>
+                                  {subs.length > 0 ? (
+                                    <Button
+                                      variant="ghost"
+                                      className={`w-full justify-between text-xl sm:text-2xl py-5 ${category.slug === 'promotions' ? 'text-red-600 hover:text-red-700' : ''}`}
+                                      onClick={() => goToSubcategoriesView(category.id)}
                                     >
-                                      {categoryName}
-                                    </Link>
-                                  </Button>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </motion.div>
-                    )}
+                                      <span>{categoryName}</span>
+                                      <ChevronRight className="h-6 w-6" />
+                                    </Button>
+                                  ) : (
+                                    <Button variant="ghost" asChild className={`w-full justify-start text-xl sm:text-2xl py-5 ${category.slug === 'promotions' ? 'text-red-600 hover:text-red-700' : ''}`}>
+                                      <Link
+                                        to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`}
+                                        onClick={closeMobileMenu}
+                                      >
+                                        {categoryName}
+                                      </Link>
+                                    </Button>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
 
-                    {/* Subcategories View */}
-                    {mobileView === 'subcategories' && selectedCategoryId && (
-                      <motion.div
-                        key="subcategories"
-                        custom={1}
-                        variants={mobileSlideVariants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.3 }}
-                        className="h-full"
-                      >
-                        <div className="sticky top-0 bg-white border-b p-4 flex items-center gap-3">
-                          <Button variant="ghost" size="icon" onClick={() => setMobileView('categories')}>
-                            <ChevronLeft className="h-5 w-5" />
-                          </Button>
-                          <h2 className="text-lg font-semibold">{getCategoryName(selectedCategoryId)}</h2>
-                        </div>
-                        <div className="p-4 space-y-4">
-                          {getCategorySubcategories(selectedCategoryId).map((sub) => {
-                            const category = categories.find(c => c.id === selectedCategoryId);
-                            return (
-                              <Button key={sub.id} variant="ghost" asChild className="w-full justify-start text-2xl py-8">
-                                <Link to={`/categories/${category?.slug}/${sub.slug}`} onClick={closeMobileMenu}>
-                                  {getSubcategoryName(sub)}
-                                </Link>
-                              </Button>
-                            );
-                          })}
-                        </div>
-                      </motion.div>
-                    )}
+                      {/* Subcategories View */}
+                      {mobileView === 'subcategories' && selectedCategoryId && (
+                        <motion.div
+                          key="subcategories"
+                          custom={1}
+                          variants={mobileSlideVariants}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.3 }}
+                          className="h-full"
+                        >
+                          <div className="sticky top-0 bg-white border-b p-4 flex items-center gap-3">
+                            <Button variant="ghost" size="icon" onClick={() => setMobileView('categories')}>
+                              <ChevronLeft className="h-5 w-5" />
+                            </Button>
+                            <h2 className="text-lg font-semibold">{getCategoryName(selectedCategoryId)}</h2>
+                          </div>
+                          <div className="p-4 space-y-2">
+                            {getCategorySubcategories(selectedCategoryId).map((sub) => {
+                              const category = categories.find(c => c.id === selectedCategoryId);
+                              return (
+                                <Button key={sub.id} variant="ghost" asChild className="w-full justify-start text-xl sm:text-2xl py-5">
+                                  <Link to={`/categories/${category?.slug}/${sub.slug}`} onClick={closeMobileMenu}>
+                                    {getSubcategoryName(sub)}
+                                  </Link>
+                                </Button>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
 
-                    {/* Services View */}
-                    {mobileView === 'services' && (
-                      <motion.div
-                        key="services"
-                        custom={1}
-                        variants={mobileSlideVariants}
-                        initial="enter"
-                        animate="center"
-                        exit="exit"
-                        transition={{ duration: 0.3 }}
-                        className="h-full"
-                      >
-                        <div className="sticky top-0 bg-white border-b p-4 flex items-center gap-3">
-                          <Button variant="ghost" size="icon" onClick={goBackToMain}>
-                            <ChevronLeft className="h-5 w-5" />
-                          </Button>
-                          <h2 className="text-lg font-semibold">{t.nav.services}</h2>
-                        </div>
-                        <div className="p-4 space-y-4">
+                      {/* Services View */}
+                      {mobileView === 'services' && (
+                        <motion.div
+                          key="services"
+                          custom={1}
+                          variants={mobileSlideVariants}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.3 }}
+                          className="h-full"
+                        >
+                          <div className="sticky top-0 bg-white border-b p-4 flex items-center gap-3">
+                            <Button variant="ghost" size="icon" onClick={goBackToMain}>
+                              <ChevronLeft className="h-5 w-5" />
+                            </Button>
+                            <h2 className="text-lg font-semibold">{t.nav.services}</h2>
+                          </div>
+                          <div className="p-4 space-y-2">
 
-                          {servicesData.map((service) => {
-                            const serviceTranslation = t.services?.[service.id as keyof typeof t.services] || service.id;
-                            return (
-                              <Button key={service.id} variant="ghost" asChild className="w-full justify-start text-2xl py-8">
-                                <Link to={`/services?service=${service.id}`} onClick={closeMobileMenu}>
-                                  <span className="mr-3">{service.icon}</span>
-                                  {serviceTranslation}
-                                </Link>
-                              </Button>
-                            );
-                          })}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                            {servicesData.map((service) => {
+                              const serviceTranslation = t.services?.[service.id as keyof typeof t.services] || service.id;
+                              return (
+                                <Button key={service.id} variant="ghost" asChild className="w-full justify-start text-xl sm:text-2xl py-5">
+                                  <Link to={`/services?service=${service.id}`} onClick={closeMobileMenu}>
+                                    <span className="mr-3">{service.icon}</span>
+                                    {serviceTranslation}
+                                  </Link>
+                                </Button>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
+            </motion.div >
+          )
+          }
+        </AnimatePresence >,
         document.body
-      )}
+      )
+      }
 
       {/* Mobile Cart Drawer */}
-      {typeof document !== 'undefined' && createPortal(
-        <AnimatePresence>
-          {cartDrawerOpen && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setCartDrawerOpen(false)}
-                className="md:hidden fixed inset-0 bg-black/50 z-[90]"
-              />
+      {
+        typeof document !== 'undefined' && createPortal(
+          <AnimatePresence>
+            {cartDrawerOpen && (
+              <>
+                {/* Backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setCartDrawerOpen(false)}
+                  className="md:hidden fixed inset-0 bg-black/50 z-[90]"
+                />
 
-              {/* Drawer */}
-              <motion.div
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                className="md:hidden fixed right-0 top-0 h-full w-full max-w-sm bg-white z-[100] shadow-2xl flex flex-col"
-                style={{ backgroundColor: '#ffffff' }}
-              >
-                {/* Header */}
-                <div className="p-4 border-b flex items-center justify-between">
-                  <h2 className="text-xl font-semibold">{t.cart.title}</h2>
-                  <button
-                    onClick={() => setCartDrawerOpen(false)}
-                    className="p-2 hover:bg-gray-100 rounded-full"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-
-                {/* Content */}
-                {cartItems.length === 0 ? (
-                  <div className="flex-1 flex items-center justify-center p-4">
-                    <div className="text-center text-gray-500">
-                      <ShoppingCart className="h-16 w-16 mx-auto mb-3 text-gray-300" />
-                      <p>{t.cart.emptyCart}</p>
-                    </div>
+                {/* Drawer */}
+                <motion.div
+                  initial={{ x: '100%' }}
+                  animate={{ x: 0 }}
+                  exit={{ x: '100%' }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                  className="md:hidden fixed right-0 top-0 h-full w-full max-w-sm bg-white z-[100] shadow-2xl flex flex-col"
+                  style={{ backgroundColor: '#ffffff' }}
+                >
+                  {/* Header */}
+                  <div className="p-4 border-b flex items-center justify-between">
+                    <h2 className="text-xl font-semibold">{t.cart.title}</h2>
+                    <button
+                      onClick={() => setCartDrawerOpen(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
                   </div>
-                ) : (
-                  <>
-                    {/* Items */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                      {cartItems.map((item) => (
-                        <div key={item.productId} className="flex gap-3 pb-4 border-b">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-20 h-20 object-cover rounded"
-                          />
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium line-clamp-2 mb-1">{item.name}</h4>
-                            {item.discountedPrice && item.originalPrice ? (
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="font-bold text-red-600">
-                                  {item.discountedPrice.toLocaleString()} DH
-                                </span>
-                                <span className="text-sm text-gray-400 line-through">
-                                  {item.originalPrice.toLocaleString()} DH
-                                </span>
+
+                  {/* Content */}
+                  {cartItems.length === 0 ? (
+                    <div className="flex-1 flex items-center justify-center p-4">
+                      <div className="text-center text-gray-500">
+                        <ShoppingCart className="h-16 w-16 mx-auto mb-3 text-gray-300" />
+                        <p>{t.cart.emptyCart}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Items */}
+                      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        {cartItems.map((item) => (
+                          <div key={item.productId} className="flex gap-3 pb-4 border-b">
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-20 h-20 object-cover rounded"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-medium line-clamp-2 mb-1">{item.name}</h4>
+                              {item.discountedPrice && item.originalPrice ? (
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="font-bold text-red-600">
+                                    {item.discountedPrice.toLocaleString()} DH
+                                  </span>
+                                  <span className="text-sm text-gray-400 line-through">
+                                    {item.originalPrice.toLocaleString()} DH
+                                  </span>
+                                </div>
+                              ) : (
+                                <p className="text-green-600 font-semibold mb-2">
+                                  {item.price.toLocaleString()} DH
+                                </p>
+                              )}
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                                  className="w-8 h-8 rounded border hover:bg-gray-100 flex items-center justify-center"
+                                >
+                                  <Minus className="h-4 w-4" />
+                                </button>
+                                <span className="w-10 text-center">{item.quantity}</span>
+                                <button
+                                  onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                                  className="w-8 h-8 rounded border hover:bg-gray-100 flex items-center justify-center"
+                                >
+                                  <Plus className="h-4 w-4" />
+                                </button>
+                                <button
+                                  onClick={() => removeFromCart(item.productId)}
+                                  className="ml-auto text-red-600 hover:text-red-700 p-2"
+                                >
+                                  <Trash2 className="h-5 w-5" />
+                                </button>
                               </div>
-                            ) : (
-                              <p className="text-green-600 font-semibold mb-2">
-                                {item.price.toLocaleString()} DH
-                              </p>
-                            )}
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                                className="w-8 h-8 rounded border hover:bg-gray-100 flex items-center justify-center"
-                              >
-                                <Minus className="h-4 w-4" />
-                              </button>
-                              <span className="w-10 text-center">{item.quantity}</span>
-                              <button
-                                onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                                className="w-8 h-8 rounded border hover:bg-gray-100 flex items-center justify-center"
-                              >
-                                <Plus className="h-4 w-4" />
-                              </button>
-                              <button
-                                onClick={() => removeFromCart(item.productId)}
-                                className="ml-auto text-red-600 hover:text-red-700 p-2"
-                              >
-                                <Trash2 className="h-5 w-5" />
-                              </button>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
 
-                    {/* Footer */}
-                    <div className="p-4 border-t bg-gray-50">
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="font-semibold text-lg">{t.cart.subtotal}:</span>
-                        <div className="flex flex-col items-end">
-                          {cartItems.reduce((acc, item) => acc + (item.originalPrice || item.price) * item.quantity, 0) > getCartTotal() ? (
-                            <>
-                              <span className="text-2xl font-bold text-red-600">
+                      {/* Footer */}
+                      <div className="p-4 border-t bg-gray-50">
+                        <div className="flex justify-between items-center mb-4">
+                          <span className="font-semibold text-lg">{t.cart.subtotal}:</span>
+                          <div className="flex flex-col items-end">
+                            {cartItems.reduce((acc, item) => acc + (item.originalPrice || item.price) * item.quantity, 0) > getCartTotal() ? (
+                              <>
+                                <span className="text-2xl font-bold text-red-600">
+                                  {getCartTotal().toLocaleString()} DH
+                                </span>
+                                <span className="text-sm text-gray-400 line-through">
+                                  {cartItems.reduce((acc, item) => acc + (item.originalPrice || item.price) * item.quantity, 0).toLocaleString()} DH
+                                </span>
+                              </>
+                            ) : (
+                              <span className="text-2xl font-bold text-green-600">
                                 {getCartTotal().toLocaleString()} DH
                               </span>
-                              <span className="text-sm text-gray-400 line-through">
-                                {cartItems.reduce((acc, item) => acc + (item.originalPrice || item.price) * item.quantity, 0).toLocaleString()} DH
-                              </span>
-                            </>
-                          ) : (
-                            <span className="text-2xl font-bold text-green-600">
-                              {getCartTotal().toLocaleString()} DH
-                            </span>
-                          )}
+                            )}
+                          </div>
                         </div>
+                        <Button
+                          asChild
+                          className="w-full bg-green-600 hover:bg-green-700 text-lg py-6"
+                        >
+                          <Link to="/panier" onClick={() => setCartDrawerOpen(false)}>
+                            {t.cart.checkout}
+                          </Link>
+                        </Button>
                       </div>
-                      <Button
-                        asChild
-                        className="w-full bg-green-600 hover:bg-green-700 text-lg py-6"
-                      >
-                        <Link to="/panier" onClick={() => setCartDrawerOpen(false)}>
-                          {t.cart.checkout}
-                        </Link>
-                      </Button>
-                    </div>
-                  </>
-                )}
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
-    </header>
+                    </>
+                  )}
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body
+        )
+      }
+    </header >
   );
 }
