@@ -4,34 +4,110 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
   <!-- PWA Manifest -->
   <link rel="manifest" href="/manifest.json">
-  
+
   <!-- Theme Color -->
   <meta name="theme-color" content="#16a34a">
   <meta name="msapplication-TileColor" content="#16a34a">
-  
+
   <!-- Apple PWA Support -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Dima Vélo">
   <link rel="apple-touch-icon" href="/favicon.png">
-  
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
   <link rel="shortcut icon" href="/favicon.png">
-  
-  <title>Dima Vélo - Magasin de Vélos à Salé, Maroc</title>
-  <meta name="description" content="Dima Vélo, votre magasin de vélos de confiance à Salé, Maroc. Vente de vélos, accessoires, pièces détachées. Services de réparation et entretien professionnels." />
-  <meta name="author" content="Dima Vélo" />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Dima Vélo - Magasin de Vélos à Salé, Maroc" />
-  <meta property="og:description" content="Dima Vélo, votre magasin de vélos de confiance à Salé, Maroc. Vente de vélos, accessoires, pièces détachées. Services de réparation et entretien professionnels." />
+  <!-- SEO Meta Tags -->
+  <title>Dima Vélo - Magasin de Vélos à Salé, Maroc | Vente, Réparation & Accessoires</title>
+  <meta name="description"
+    content="Dima Vélo, votre magasin de vélos de confiance à Salé, Maroc. Vente de vélos de ville, VTT, vélos électriques, accessoires et pièces détachées. Services de réparation et entretien professionnels. Ouvert 7j/7 de 8h à 23h." />
+  <meta name="keywords"
+    content="vélo Salé, magasin vélo Maroc, VTT Salé, vélo électrique Maroc, réparation vélo Salé, accessoires vélo, pièces détachées vélo, Dima Vélo, bicycle shop Sale Morocco" />
+  <meta name="author" content="Dima Vélo" />
+  <link rel="canonical" href="https://dimavelo.com/" />
+
+  <!-- Geo Tags for Local SEO -->
+  <meta name="geo.region" content="MA-SAL" />
+  <meta name="geo.placename" content="Salé" />
+  <meta name="geo.position" content="34.0403168527778;-6.805869826366514" />
+  <meta name="ICBM" content="34.0403168527778, -6.805869826366514" />
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="/logo.png" />
+  <meta property="og:url" content="https://dimavelo.com/" />
+  <meta property="og:title" content="Dima Vélo - Magasin de Vélos à Salé, Maroc" />
+  <meta property="og:description"
+    content="Dima Vélo, votre magasin de vélos de confiance à Salé, Maroc. Vente de vélos, accessoires, pièces détachées. Services de réparation et entretien professionnels." />
+  <meta property="og:image" content="https://dimavelo.com/logo.png" />
+  <meta property="og:locale" content="fr_MA" />
+  <meta property="og:locale:alternate" content="ar_MA" />
+  <meta property="og:locale:alternate" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://dimavelo.com/" />
+  <meta name="twitter:title" content="Dima Vélo - Magasin de Vélos à Salé, Maroc" />
+  <meta name="twitter:description"
+    content="Dima Vélo, votre magasin de vélos de confiance à Salé, Maroc. Vente de vélos, accessoires, pièces détachées. Services de réparation et entretien professionnels." />
+  <meta name="twitter:image" content="https://dimavelo.com/logo.png" />
+
+  <!-- Structured Data (JSON-LD) for Local Business -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Dima Vélo",
+    "image": "https://dimavelo.com/logo.png",
+    "@id": "https://dimavelo.com",
+    "url": "https://dimavelo.com",
+    "telephone": "+212631532200",
+    "priceRange": "€-€€€",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Salé",
+      "addressLocality": "Salé",
+      "addressRegion": "Rabat-Salé-Kénitra",
+      "postalCode": "",
+      "addressCountry": "MA"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 34.0403168527778,
+      "longitude": -6.805869826366514
+    },
+    "openingHoursSpecification": [{
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "opens": "08:00",
+      "closes": "23:00"
+    }],
+    "sameAs": [
+      "https://dimavelo.com"
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "127"
+    },
+    "description": "Magasin de vélos à Salé, Maroc. Vente de vélos de ville, VTT, vélos électriques, accessoires et pièces détachées. Services de réparation et entretien professionnels.",
+    "paymentAccepted": "Cash, Bank Transfer",
+    "currenciesAccepted": "MAD"
+  }
+  </script>
 
 </head>
 
