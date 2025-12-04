@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, X, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -8,9 +10,133 @@ import { Badge } from '@/components/ui/badge';
 import { useProducts } from '@/hooks/useProducts';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { categories } from '@/lib/data';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Product } from '@/lib/types';
 
 const INITIAL_RESULTS_LIMIT = 5;
+const SEARCH_DEBOUNCE_MS = 300;
+
+type Language = 'fr' | 'en' | 'ar';
+
+const smoothTransition = { duration: 0.3, ease: [0.4, 0, 0.2, 1] };
+const fadeTransition = { duration: 0.2 };
+
+function getLocalizedField(item: any, field: string, lang: Language): string {
+  const langSuffix = lang === 'ar' ? 'Ar' : lang === 'en' ? 'En' : 'Fr';
+  return item[`${field}${langSuffix}`] || item[`${field}Fr`] || '';
+}
+
+function highlightText(text: string, query: string): ReactNode {
+  if (!query.trim() || !text) return text;
+  try {
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const parts = text.split(new RegExp(`(${escaped})`, 'gi'));
+    return parts.map((part, i) =>
+      part.toLowerCase() === query.toLowerCase()
+        ? <mark key={i} className="bg-yellow-200 px-0.5 rounded">{part}</mark>
+        : part
+    );
+  } catch {
+    return text;
+  }
+}
+
+function SearchResultItem({
+  product,
+  query,
+  language,
+  onClick,
+  index,
+}: {
+  product: Product;
+  query: string;
+  language: Language;
+  onClick: () => void;
+  index: number;
+}) {
+  const name = getLocalizedField(product, 'name', language);
+  const description = getLocalizedField(product, 'description', language);
+  const category = categories.find((c) => c.id === product.categoryId);
+  const categoryName = category ? getLocalizedField(category, 'name', language) : '';
+  const defaultImg = 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.04, ...smoothTransition }}
+    >
+      <Link
+        to={`/product/${product.id}`}
+        onClick={onClick}
+        className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-200"
+      >
+        <motion.div
+          className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100"
+          whileHover={{ scale: 1.05 }}
+          transition={fadeTransition}
+        >
+          <img
+            src={product.images?.[0] || defaultImg}
+            alt={name}
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+        <div className="flex-1 min-w-0">
+          <h4 className="font-semibold text-sm text-gray-900 truncate">
+            {highlightText(name, query)}
+          </h4>
+          <p className="text-xs text-gray-500 line-clamp-1">
+            {highlightText(description, query)}
+          </p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm font-bold text-green-600">{product.price.toLocaleString()} DH</p>
+            <Badge variant="outline" className="text-xs">{categoryName}</Badge>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+}
+
+function useClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void) {
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) handler();
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [ref, handler]);
+}
+
+function useEscapeKey(handler: () => void) {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handler();
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [handler]);
+}
+
+function useSearchHistory() {
+  const [history, setHistory] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('searchHistory');
+      if (saved) setHistory(JSON.parse(saved));
+    } catch { }
+  }, []);
+
+  const addToHistory = (query: string) => {
+    if (!query.trim()) return;
+    const updated = [query, ...history.filter((h) => h.toLowerCase() !== query.toLowerCase())].slice(0, 5);
+    setHistory(updated);
+    localStorage.setItem('searchHistory', JSON.stringify(updated));
+  };
+
+  return { history, addToHistory };
+}
 
 export function SearchBar() {
   const { t, language } = useLanguage();
@@ -19,197 +145,86 @@ export function SearchBar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAllResults, setShowAllResults] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
+  const { addToHistory } = useSearchHistory();
+  const lang = language as Language;
 
-  // Load search history from localStorage
+  const closeSearch = () => {
+    setIsOpen(false);
+    setSearchQuery('');
+  };
+
+  useClickOutside(searchRef, () => setIsOpen(false));
+  useEscapeKey(closeSearch);
+
   useEffect(() => {
-    const saved = localStorage.getItem('searchHistory');
-    if (saved) {
-      try {
-        setSearchHistory(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load search history:', e);
-      }
-    }
-  }, []);
-
-  // Close search when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Close search on Escape key
-  useEffect(() => {
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-        setSearchQuery('');
-      }
-    }
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, []);
-
-  // Simulate search delay for better UX
-  useEffect(() => {
-    if (searchQuery) {
-      setIsSearching(true);
-      const timer = setTimeout(() => {
-        setIsSearching(false);
-      }, 300);
-      return () => clearTimeout(timer);
-    } else {
+    if (!searchQuery) {
       setIsSearching(false);
+      return;
     }
+    setIsSearching(true);
+    const timer = setTimeout(() => setIsSearching(false), SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Get localized product name
-  const getProductName = (product: typeof products[0]) => {
-    switch (language) {
-      case 'en': return product.nameEn || product.nameFr;
-      case 'ar': return product.nameAr || product.nameFr;
-      default: return product.nameFr;
-    }
-  };
-
-  // Get localized product description
-  const getProductDescription = (product: typeof products[0]) => {
-    switch (language) {
-      case 'en': return product.descriptionEn || product.descriptionFr;
-      case 'ar': return product.descriptionAr || product.descriptionFr;
-      default: return product.descriptionFr;
-    }
-  };
-
-  // Get category name
-  const getCategoryName = (categoryId: string) => {
-    const category = categories.find(c => c.id === categoryId);
-    if (!category) return '';
-
-    switch (language) {
-      case 'en': return category.nameEn;
-      case 'ar': return category.nameAr;
-      default: return category.nameFr;
-    }
-  };
-
-  // Highlight matching search terms
-  const highlightText = (text: string, query: string) => {
-    if (!query.trim() || !text) return text;
-
-    try {
-      const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
-      return parts.map((part, i) =>
-        part.toLowerCase() === query.toLowerCase()
-          ? <mark key={i} className="bg-yellow-200 px-0.5 rounded">{part}</mark>
-          : part
-      );
-    } catch (e) {
-      return text;
-    }
-  };
-
-  // Filter products based on search query
   const filteredProducts = searchQuery.trim()
-    ? products.filter((product) => {
+    ? products.filter((p) => {
       const query = searchQuery.toLowerCase();
-      const name = getProductName(product).toLowerCase();
-      const description = getProductDescription(product).toLowerCase();
-      return name.includes(query) || description.includes(query);
+      const name = getLocalizedField(p, 'name', lang).toLowerCase();
+      const desc = getLocalizedField(p, 'description', lang).toLowerCase();
+      return name.includes(query) || desc.includes(query);
     })
     : [];
 
-  const displayedResults = showAllResults
-    ? filteredProducts
-    : filteredProducts.slice(0, INITIAL_RESULTS_LIMIT);
-
+  const displayedResults = showAllResults ? filteredProducts : filteredProducts.slice(0, INITIAL_RESULTS_LIMIT);
   const hasMoreResults = filteredProducts.length > INITIAL_RESULTS_LIMIT;
-
-  // Add search to history
-  const addToHistory = (query: string) => {
-    if (!query.trim()) return;
-    const updated = [query, ...searchHistory.filter(h => h.toLowerCase() !== query.toLowerCase())].slice(0, 5);
-    setSearchHistory(updated);
-    localStorage.setItem('searchHistory', JSON.stringify(updated));
-  };
 
   const handleSearchClick = () => {
     setIsOpen(true);
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
-  const handleClearSearch = () => {
+  const handleClear = () => {
     setSearchQuery('');
     setShowAllResults(false);
     inputRef.current?.focus();
   };
 
   const handleProductClick = () => {
-    if (searchQuery.trim()) {
-      addToHistory(searchQuery);
-    }
-    setIsOpen(false);
-    setSearchQuery('');
+    if (searchQuery.trim()) addToHistory(searchQuery);
+    closeSearch();
     setShowAllResults(false);
-  };
-
-  const handleHistoryClick = (query: string) => {
-    setSearchQuery(query);
-    inputRef.current?.focus();
   };
 
   return (
     <div ref={searchRef} className="relative">
-      {/* Search Button/Input Container */}
       <AnimatePresence mode="wait">
         {!isOpen ? (
           <motion.div
-            key="search-button"
+            key="button"
             initial={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            transition={fadeTransition}
           >
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleSearchClick}
-              className="relative"
-              aria-label="Search"
-            >
+            <Button variant="ghost" size="icon" onClick={handleSearchClick} aria-label="Search">
               <Search className="h-5 w-5" />
             </Button>
           </motion.div>
         ) : (
           <motion.div
-            key="search-input"
+            key="input"
             initial={{ opacity: 0, width: 40, scale: 0.95 }}
             animate={{ opacity: 1, width: '100%', scale: 1 }}
             exit={{ opacity: 0, width: 40, scale: 0.95 }}
-            transition={{
-              duration: 0.3,
-              ease: [0.4, 0, 0.2, 1],
-              width: { duration: 0.3 },
-              opacity: { duration: 0.2 },
-              scale: { duration: 0.3 }
-            }}
+            transition={smoothTransition}
             className="relative w-full"
             style={{ transformOrigin: 'right center' }}
           >
             <motion.div
               initial={{ x: -10, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.1, duration: 0.2 }}
+              transition={{ delay: 0.1, ...fadeTransition }}
             >
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
             </motion.div>
@@ -230,16 +245,10 @@ export function SearchBar() {
                   initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
                   animate={{ opacity: 1, scale: 1, rotate: 0 }}
                   exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
-                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  transition={fadeTransition}
                   className="absolute right-1 top-1/2 -translate-y-1/2"
                 >
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleClearSearch}
-                    className="h-7 w-7"
-                    aria-label="Clear search"
-                  >
+                  <Button variant="ghost" size="icon" onClick={handleClear} className="h-7 w-7" aria-label="Clear">
                     <X className="h-4 w-4" />
                   </Button>
                 </motion.div>
@@ -249,161 +258,63 @@ export function SearchBar() {
         )}
       </AnimatePresence>
 
-      {/* Search Results Dropdown */}
       <AnimatePresence>
         {isOpen && searchQuery && (
           <motion.div
-            initial={{
-              opacity: 0,
-              y: -10,
-              scale: 0.95
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1
-            }}
-            exit={{
-              opacity: 0,
-              y: -10,
-              scale: 0.95
-            }}
-            transition={{
-              duration: 0.3,
-              ease: [0.4, 0, 0.2, 1],
-              opacity: { duration: 0.2 },
-              y: { duration: 0.3 },
-              scale: { duration: 0.3 }
-            }}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={smoothTransition}
             className="absolute top-full right-0 mt-2 w-full md:w-96 max-h-[70vh] overflow-hidden z-50"
-            style={{
-              transformOrigin: 'top right',
-              willChange: 'transform, opacity'
-            }}
+            style={{ transformOrigin: 'top right' }}
           >
             <Card className="shadow-lg overflow-hidden backdrop-blur-sm bg-white/95">
               {isSearching || productsLoading ? (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                  className="p-8 flex items-center justify-center"
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-8 flex items-center justify-center">
                   <Loader2 className="h-6 w-6 animate-spin text-green-600" />
                 </motion.div>
               ) : filteredProducts.length === 0 ? (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  transition={smoothTransition}
                   className="p-8 text-center text-gray-500"
                 >
                   <p className="text-sm">{t.categories?.noProducts || 'Aucun produit trouvé'}</p>
                 </motion.div>
               ) : (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-y-auto max-h-[60vh]"
-                  style={{ willChange: 'transform' }}
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="overflow-y-auto max-h-[60vh]">
                   <div className="p-2">
-                    {displayedResults.map((product, index) => (
-                      <motion.div
+                    {displayedResults.map((product, i) => (
+                      <SearchResultItem
                         key={product.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{
-                          delay: index * 0.04,
-                          duration: 0.3,
-                          ease: [0.4, 0, 0.2, 1]
-                        }}
-                        style={{ willChange: 'transform, opacity' }}
-                      >
-                        <Link
-                          to={`/product/${product.id}`}
-                          onClick={handleProductClick}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all duration-200 ease-out"
-                        >
-                          <motion.div
-                            className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100"
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <img
-                              src={product.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
-                              alt={getProductName(product)}
-                              className="w-full h-full object-cover"
-                            />
-                          </motion.div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-sm text-gray-900 truncate">
-                              {highlightText(getProductName(product), searchQuery)}
-                            </h4>
-                            <p className="text-xs text-gray-500 line-clamp-1">
-                              {highlightText(getProductDescription(product), searchQuery)}
-                            </p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <p className="text-sm font-bold text-green-600">
-                                {product.price.toLocaleString()} DH
-                              </p>
-                              <Badge variant="outline" className="text-xs">
-                                {getCategoryName(product.categoryId)}
-                              </Badge>
-                            </div>
-                          </div>
-                        </Link>
-                      </motion.div>
+                        product={product}
+                        query={searchQuery}
+                        language={lang}
+                        onClick={handleProductClick}
+                        index={i}
+                      />
                     ))}
                   </div>
 
                   <AnimatePresence mode="wait">
-                    {hasMoreResults && !showAllResults && (
+                    {hasMoreResults && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        transition={{
-                          duration: 0.3,
-                          ease: [0.4, 0, 0.2, 1],
-                          height: { duration: 0.3 },
-                          opacity: { duration: 0.2 }
-                        }}
+                        transition={smoothTransition}
                         className="border-t overflow-hidden"
                       >
                         <div className="p-3">
                           <Button
                             variant="ghost"
-                            onClick={() => setShowAllResults(true)}
-                            className="w-full text-green-600 hover:text-green-700 hover:bg-green-50 transition-all duration-200"
+                            onClick={() => setShowAllResults(!showAllResults)}
+                            className={`w-full transition-all duration-200 ${showAllResults ? 'text-gray-600 hover:bg-gray-50' : 'text-green-600 hover:bg-green-50'}`}
                           >
-                            {t.common?.showMore || 'Afficher plus'} ({filteredProducts.length - INITIAL_RESULTS_LIMIT} {t.common?.more || 'de plus'})
-                          </Button>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {showAllResults && hasMoreResults && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{
-                          duration: 0.3,
-                          ease: [0.4, 0, 0.2, 1],
-                          height: { duration: 0.3 },
-                          opacity: { duration: 0.2 }
-                        }}
-                        className="border-t overflow-hidden"
-                      >
-                        <div className="p-3">
-                          <Button
-                            variant="ghost"
-                            onClick={() => setShowAllResults(false)}
-                            className="w-full text-gray-600 hover:text-gray-700 hover:bg-gray-50 transition-all duration-200"
-                          >
-                            {t.common?.showLess || 'Afficher moins'}
+                            {showAllResults
+                              ? t.common?.showLess || 'Afficher moins'
+                              : `${t.common?.showMore || 'Afficher plus'} (${filteredProducts.length - INITIAL_RESULTS_LIMIT} ${t.common?.more || 'de plus'})`}
                           </Button>
                         </div>
                       </motion.div>

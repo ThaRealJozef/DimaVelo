@@ -18,6 +18,7 @@ import LoginPage from './pages/LoginPage';
 import TestImageUpload from '@/components/TestImageUpload';
 import PromotionsPage from './pages/PromotionsPage';
 import CartPage from './pages/CartPage';
+import FAQPage from './pages/FAQPage';
 import { PageTransition } from '@/components/PageTransition';
 
 
@@ -59,6 +60,7 @@ const App = () => (
                 <Route path="/promotions" element={<PageTransition><PromotionsPage /></PageTransition>} />
                 <Route path="/services" element={<PageTransition><ServicesPage /></PageTransition>} />
                 <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
+                <Route path="/faq" element={<PageTransition><FAQPage /></PageTransition>} />
                 <Route path="/panier" element={<PageTransition><CartPage /></PageTransition>} />
                 <Route path="/admin/login" element={<PageTransition><LoginPage /></PageTransition>} />
                 <Route
@@ -82,3 +84,4 @@ const App = () => (
 );
 
 export default App;
+

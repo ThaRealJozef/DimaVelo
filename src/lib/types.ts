@@ -93,6 +93,7 @@ export type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' |
 
 export interface CartItem {
   productId: string;
+  categoryId: string;
   name: string;
   price: number;
   quantity: number;
@@ -100,3 +101,4 @@ export interface CartItem {
   discountedPrice?: number;
   originalPrice?: number;
 }
+

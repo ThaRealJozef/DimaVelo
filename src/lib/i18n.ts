@@ -8,6 +8,7 @@ export const translations = {
       categories: 'Catégories',
       services: 'Services',
       contact: 'Contact',
+      faq: 'FAQ',
       admin: 'Admin',
     },
     // Common
@@ -232,6 +233,7 @@ export const translations = {
       categories: 'Categories',
       services: 'Services',
       contact: 'Contact',
+      faq: 'FAQ',
       admin: 'Admin',
     },
     // Common
@@ -240,6 +242,7 @@ export const translations = {
       viewDetails: 'View Details',
       viewAll: 'View All',
       contact: 'Contact',
+      faq: 'FAQ',
       submit: 'Submit',
       cancel: 'Cancel',
       save: 'Save',
@@ -456,6 +459,7 @@ export const translations = {
       categories: 'الفئات',
       services: 'الخدمات',
       contact: 'اتصل بنا',
+      faq: 'الأسئلة الشائعة',
       admin: 'الإدارة',
     },
     // Common
@@ -678,3 +682,5 @@ export const translations = {
 export function getTranslations(lang: Language) {
   return translations[lang];
 }
+
+
