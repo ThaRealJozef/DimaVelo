@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { StockBadge } from '@/components/StockBadge';
+import { QuickViewModal } from '@/components/QuickViewModal';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { Product } from '@/lib/types';
 
@@ -39,30 +41,52 @@ function ProductPrice({ product }: { product: Product }) {
     );
 }
 
-function ProductCard({ product, language, buttonText }: { product: Product; language: Language; buttonText: string }) {
+interface ProductCardProps {
+    product: Product;
+    language: Language;
+    buttonText: string;
+    onQuickView: (product: Product) => void;
+}
+
+function ProductCard({ product, language, buttonText, onQuickView }: ProductCardProps) {
     const name = getLocalizedField(product, 'name', language);
     const description = getLocalizedField(product, 'description', language);
 
     return (
-        <Link to={`/product/${product.id}`} className="group">
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
-                <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
-                    <img
-                        src={product.images?.[0] || DEFAULT_IMG}
-                        alt={name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                </div>
-                <CardContent className="p-3 md:p-4 flex-1 flex flex-col">
-                    <h3 className="font-semibold text-base md:text-lg mb-2 break-words line-clamp-1">{name}</h3>
-                    <p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2 break-words">{description}</p>
-                    <div className="flex flex-col gap-2 mt-auto">
-                        <ProductPrice product={product} />
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full">{buttonText}</Button>
+        <div className="group relative">
+            <Link to={`/product/${product.id}`}>
+                <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
+                    <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0 relative">
+                        <img
+                            src={product.images?.[0] || DEFAULT_IMG}
+                            alt={name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <StockBadge quantity={product.stockQuantity} />
                     </div>
-                </CardContent>
-            </Card>
-        </Link>
+                    <CardContent className="p-3 md:p-4 flex-1 flex flex-col">
+                        <h3 className="font-semibold text-base md:text-lg mb-2 break-words line-clamp-1">{name}</h3>
+                        <p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2 break-words">{description}</p>
+                        <div className="flex flex-col gap-2 mt-auto">
+                            <ProductPrice product={product} />
+                            <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full">{buttonText}</Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            </Link>
+            {/* Quick View Button */}
+            <button
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onQuickView(product);
+                }}
+                className="absolute top-2 right-2 p-2 bg-white/90 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-green-50 z-10"
+                aria-label="Aperçu rapide"
+            >
+                <Eye className="h-4 w-4 text-gray-700" />
+            </button>
+        </div>
     );
 }
 
@@ -116,6 +140,7 @@ interface FeaturedProductsGridProps {
 export function FeaturedProductsGrid({ products }: FeaturedProductsGridProps) {
     const { t, language } = useLanguage();
     const [currentPage, setCurrentPage] = useState(0);
+    const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
     const lang = language as Language;
 
     const maxProducts = PRODUCTS_PER_PAGE * MAX_PAGES;
@@ -127,22 +152,36 @@ export function FeaturedProductsGrid({ products }: FeaturedProductsGridProps) {
     if (limitedProducts.length === 0) return null;
 
     return (
-        <div className="relative">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6">
-                {currentProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} language={lang} buttonText={t.common.viewDetails} />
-                ))}
+        <>
+            <div className="relative">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6">
+                    {currentProducts.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            language={lang}
+                            buttonText={t.common.viewDetails}
+                            onQuickView={setQuickViewProduct}
+                        />
+                    ))}
+                </div>
+
+                {totalPages > 1 && (
+                    <PaginationControls
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPrev={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+                        onNext={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
+                        isRtl={language === 'ar'}
+                    />
+                )}
             </div>
 
-            {totalPages > 1 && (
-                <PaginationControls
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPrev={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-                    onNext={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-                    isRtl={language === 'ar'}
-                />
-            )}
-        </div>
+            <QuickViewModal
+                product={quickViewProduct}
+                isOpen={!!quickViewProduct}
+                onClose={() => setQuickViewProduct(null)}
+            />
+        </>
     );
 }

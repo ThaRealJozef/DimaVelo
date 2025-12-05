@@ -17,7 +17,7 @@ const SEARCH_DEBOUNCE_MS = 300;
 
 type Language = 'fr' | 'en' | 'ar';
 
-const smoothTransition = { duration: 0.3, ease: [0.4, 0, 0.2, 1] };
+const smoothTransition = { duration: 0.15, ease: [0.25, 0.1, 0.25, 1] };
 const fadeTransition = { duration: 0.2 };
 
 function getLocalizedField(item: any, field: string, lang: Language): string {

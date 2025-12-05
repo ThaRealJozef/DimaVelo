@@ -19,6 +19,7 @@ import TestImageUpload from '@/components/TestImageUpload';
 import PromotionsPage from './pages/PromotionsPage';
 import CartPage from './pages/CartPage';
 import FAQPage from './pages/FAQPage';
+import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { PageTransition } from '@/components/PageTransition';
 
 
@@ -75,6 +76,7 @@ const App = () => (
                 />
                 <Route path="/test-upload" element={<PageTransition><TestImageUpload /></PageTransition>} />
               </Routes>
+              <WhatsAppButton />
             </div>
           </BrowserRouter>
         </TooltipProvider>

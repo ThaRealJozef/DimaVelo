@@ -86,7 +86,7 @@
   input,
   select,
   textarea {
-    @apply transition-all duration-300 ease-out;
+    @apply transition-all duration-150 ease-out;
   }
 
   /* Card hover effects */
@@ -108,7 +108,7 @@
 
   /* Smooth image loading */
   img {
-    @apply transition-all duration-500 ease-out;
+    @apply transition-all duration-200 ease-out;
   }
 
   /* Card lift effect */
@@ -152,7 +152,7 @@
   }
 
   .animate-fade-in {
-    animation: fadeIn 0.6s ease-out forwards;
+    animation: fadeIn 0.3s ease-out forwards;
   }
 
   /* Pulse effect for badges */
@@ -177,27 +177,6 @@
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  /* Smooth link underline effect */
-  a:not(.no-underline) {
-    @apply relative;
-  }
-
-  a:not(.no-underline):hover::after {
-    content: '';
-    @apply absolute bottom-0 left-0 w-full h-0.5 bg-current;
-    animation: slideIn 0.3s ease-out;
-  }
-
-  @keyframes slideIn {
-    from {
-      width: 0;
-    }
-
-    to {
-      width: 100%;
-    }
   }
 }
 

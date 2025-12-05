@@ -7,8 +7,8 @@ const resizeImage = (file: File): Promise<Blob> => {
       img.src = event.target?.result as string;
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 1200;
-        const MAX_HEIGHT = 1200;
+        const MAX_WIDTH = 1920;
+        const MAX_HEIGHT = 1080;
         let width = img.width;
         let height = img.height;
 
@@ -38,7 +38,7 @@ const resizeImage = (file: File): Promise<Blob> => {
             }
           },
           'image/jpeg',
-          0.8 // Quality (0.0 - 1.0)
+          1.0 // Quality (0.0 - 1.0)
         );
       };
       img.onerror = (error) => reject(error);

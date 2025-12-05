@@ -479,6 +479,8 @@ export function Header() {
                         <div className="flex-1 overflow-y-auto pt-10 px-6 space-y-1">
                           <MobileMenuItem to="/" onClick={closeMobileMenu}>{t.nav.home}</MobileMenuItem>
                           <MenuDivider />
+                          <MobileMenuItem to="/promotions" onClick={closeMobileMenu} isPromo>Promotions</MobileMenuItem>
+                          <MenuDivider />
                           <MobileMenuItem hasArrow onClick={() => setMobileView('categories')}>{t.nav.categories}</MobileMenuItem>
                           <MenuDivider />
                           <MobileMenuItem hasArrow onClick={() => setMobileView('services')}>{t.nav.services}</MobileMenuItem>
@@ -505,16 +507,16 @@ export function Header() {
                       <motion.div key="categories" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={slideTransition} className="h-full overflow-y-auto">
                         <MobileMenuHeader title={t.nav.categories} onBack={() => setMobileView('main')} />
                         <div className="p-4 space-y-2">
-                          {sortedCategories.map((category) => {
+                          {sortedCategories.filter((c) => c.slug !== 'promotions').map((category) => {
                             const subs = getCategorySubcategories(category.id);
                             return (
                               <div key={category.id}>
                                 {subs.length > 0 ? (
-                                  <MobileMenuItem hasArrow isPromo={category.slug === 'promotions'} onClick={() => { setSelectedCategoryId(category.id); setMobileView('subcategories'); }}>
+                                  <MobileMenuItem hasArrow onClick={() => { setSelectedCategoryId(category.id); setMobileView('subcategories'); }}>
                                     {getLocalizedName(category)}
                                   </MobileMenuItem>
                                 ) : (
-                                  <MobileMenuItem to={category.slug === 'promotions' ? '/promotions' : `/categories/${category.slug}`} isPromo={category.slug === 'promotions'} onClick={closeMobileMenu}>
+                                  <MobileMenuItem to={`/categories/${category.slug}`} onClick={closeMobileMenu}>
                                     {getLocalizedName(category)}
                                   </MobileMenuItem>
                                 )}

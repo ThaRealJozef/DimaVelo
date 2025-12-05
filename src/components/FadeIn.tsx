@@ -8,7 +8,7 @@ interface FadeInProps {
     className?: string;
 }
 
-export function FadeIn({ children, delay = 0, duration = 0.5, className = '' }: FadeInProps) {
+export function FadeIn({ children, delay = 0, duration = 0.25, className = '' }: FadeInProps) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -31,7 +31,7 @@ interface StaggerContainerProps {
     staggerDelay?: number;
 }
 
-export function StaggerContainer({ children, className = '', staggerDelay = 0.1 }: StaggerContainerProps) {
+export function StaggerContainer({ children, className = '', staggerDelay = 0.05 }: StaggerContainerProps) {
     return (
         <motion.div
             initial="hidden"
@@ -59,8 +59,8 @@ export function StaggerItem({ children, className = '' }: { children: ReactNode;
                     opacity: 1,
                     y: 0,
                     transition: {
-                        duration: 0.5,
-                        ease: [0.22, 1, 0.36, 1],
+                        duration: 0.25,
+                        ease: [0.25, 0.1, 0.25, 1],
                     },
                 },
             }}

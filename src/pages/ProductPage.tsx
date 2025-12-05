@@ -7,6 +7,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { DeliveryInfo } from '@/components/DeliveryInfo';
 import { ProductImageGallery } from '@/components/ProductImageGallery';
+import { StickyAddToCart } from '@/components/StickyAddToCart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -350,6 +351,14 @@ export default function ProductPage() {
           )}
         </div>
       </main>
+
+      <StickyAddToCart
+        productName={productName}
+        price={product.originalPrice || product.price}
+        discountedPrice={product.discountedPrice}
+        isAvailable={product.isAvailable}
+        onAddToCart={handleAddToCart}
+      />
 
       <Footer />
     </div>

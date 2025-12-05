@@ -8,6 +8,7 @@ import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { CategoriesCarousel } from '@/components/CategoriesCarousel';
 import { FeaturedProductsGrid } from '@/components/FeaturedProductsGrid';
 import { DeliveryInfo } from '@/components/DeliveryInfo';
+import { Testimonials } from '@/components/Testimonials';
 import { useProducts } from '@/hooks/useProducts';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { categories } from '@/lib/data';
@@ -149,6 +150,9 @@ export default function Index() {
             </div>
           </div>
         </section>
+
+        {/* Testimonials */}
+        <Testimonials />
 
         {/* Delivery */}
         <section className="py-8 md:py-12 bg-white overflow-hidden">
