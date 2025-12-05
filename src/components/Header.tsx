@@ -506,8 +506,8 @@ export function Header() {
                     {mobileView === 'categories' && (
                       <motion.div key="categories" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={slideTransition} className="h-full overflow-y-auto">
                         <MobileMenuHeader title={t.nav.categories} onBack={() => setMobileView('main')} />
-                        <div className="p-4 space-y-2">
-                          {sortedCategories.filter((c) => c.slug !== 'promotions').map((category) => {
+                        <div className="flex-1 overflow-y-auto pt-10 px-6 space-y-1">
+                          {sortedCategories.filter((c) => c.slug !== 'promotions').map((category, index, arr) => {
                             const subs = getCategorySubcategories(category.id);
                             return (
                               <div key={category.id}>
@@ -520,6 +520,7 @@ export function Header() {
                                     {getLocalizedName(category)}
                                   </MobileMenuItem>
                                 )}
+                                {index < arr.length - 1 && <MenuDivider />}
                               </div>
                             );
                           })}
@@ -531,13 +532,16 @@ export function Header() {
                     {mobileView === 'subcategories' && selectedCategoryId && (
                       <motion.div key="subcategories" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={slideTransition} className="h-full overflow-y-auto">
                         <MobileMenuHeader title={getLocalizedName(categories.find(c => c.id === selectedCategoryId)!)} onBack={() => setMobileView('categories')} />
-                        <div className="p-4 space-y-2">
-                          {getCategorySubcategories(selectedCategoryId).map((sub) => {
+                        <div className="flex-1 overflow-y-auto pt-10 px-6 space-y-1">
+                          {getCategorySubcategories(selectedCategoryId).map((sub, index, arr) => {
                             const category = categories.find(c => c.id === selectedCategoryId);
                             return (
-                              <MobileMenuItem key={sub.id} to={`/categories/${category?.slug}/${sub.slug}`} onClick={closeMobileMenu}>
-                                {getLocalizedName(sub)}
-                              </MobileMenuItem>
+                              <div key={sub.id}>
+                                <MobileMenuItem to={`/categories/${category?.slug}/${sub.slug}`} onClick={closeMobileMenu}>
+                                  {getLocalizedName(sub)}
+                                </MobileMenuItem>
+                                {index < arr.length - 1 && <MenuDivider />}
+                              </div>
                             );
                           })}
                         </div>
@@ -548,11 +552,14 @@ export function Header() {
                     {mobileView === 'services' && (
                       <motion.div key="services" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={slideTransition} className="h-full overflow-y-auto">
                         <MobileMenuHeader title={t.nav.services} onBack={() => setMobileView('main')} />
-                        <div className="p-4 space-y-2">
-                          {servicesData.map((service) => (
-                            <MobileMenuItem key={service.id} to={`/services?service=${service.id}`} onClick={closeMobileMenu} icon={service.icon}>
-                              {t.services?.[service.id as keyof typeof t.services] || service.id}
-                            </MobileMenuItem>
+                        <div className="flex-1 overflow-y-auto pt-10 px-6 space-y-1">
+                          {servicesData.map((service, index, arr) => (
+                            <div key={service.id}>
+                              <MobileMenuItem to={`/services?service=${service.id}`} onClick={closeMobileMenu} icon={service.icon}>
+                                {t.services?.[service.id as keyof typeof t.services] || service.id}
+                              </MobileMenuItem>
+                              {index < arr.length - 1 && <MenuDivider />}
+                            </div>
                           ))}
                         </div>
                       </motion.div>
