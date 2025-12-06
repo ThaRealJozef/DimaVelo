@@ -1,23 +1,14 @@
-/**
- * Static data for Dima Vélo bike shop
- * Contains categories, subcategories, products, and contact info
- */
+/*Static data*/
 import type { Product, Category, Subcategory } from './types';
 
-// ============================================================================
 // CONTACT INFORMATION
-// ============================================================================
-
 export const WHATSAPP_NUMBER = '212631532200';
 export const PHONE_NUMBER = '+212 6 31 53 22 00';
 export const SHOP_EMAIL = 'dimaveloteam@gmail.com';
 export const SHOP_ADDRESS = 'Avenue Hassan II, Salé, Maroc';
 export const SHOP_HOURS = 'Lun-Sam: 9h-19h | Dim: 10h-18h';
 
-// ============================================================================
 // CATEGORIES
-// ============================================================================
-
 export const categories: Category[] = [
   {
     id: '6',
@@ -93,10 +84,7 @@ export const categories: Category[] = [
   },
 ];
 
-// ============================================================================
 // SUBCATEGORIES
-// ============================================================================
-
 export const subcategories: Subcategory[] = [
   // Vélos
   { id: '1-1', nameFr: 'Vélo de Route', nameEn: 'Road Bike', nameAr: 'دراجة الطريق', slug: 'velo-de-route', parentCategoryId: '1' },
@@ -122,10 +110,7 @@ export const subcategories: Subcategory[] = [
   { id: '4-2', nameFr: 'Route', nameEn: 'Road', nameAr: 'الطريق', slug: 'route-shoes', parentCategoryId: '4' },
 ];
 
-// ============================================================================
 // PRODUCTS
-// ============================================================================
-
 export const products: Product[] = [
   {
     id: '1',
