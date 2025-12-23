@@ -21,15 +21,20 @@ const PRODUCTS_COLLECTION = 'products';
 export const productService = {
   async getAllProducts(): Promise<Product[]> {
     try {
+      console.log('[ProductService] Fetching all products...');
       const q = query(collection(db, PRODUCTS_COLLECTION), orderBy('displayOrder', 'asc'));
       const querySnapshot = await getDocs(q);
+      console.log('[ProductService] Query snapshot size:', querySnapshot.size);
 
-      return querySnapshot.docs.map((doc) => ({
+      const products = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Product[];
+
+      console.log('[ProductService] Fetched products count:', products.length);
+      return products;
     } catch (error) {
-      console.error('Error getting products:', error);
+      console.error('[ProductService] Error getting products:', error);
       throw new Error('Failed to fetch products');
     }
   },
