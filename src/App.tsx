@@ -1,7 +1,7 @@
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Routes, Route, useLocation } from 'react-router-dom';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { CartProvider } from '@/contexts/CartContext';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
@@ -42,13 +42,14 @@ function ManifestSwitcher() {
   return null;
 }
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <CartProvider>
-        <TooltipProvider>
-          <Toaster />
-          <BrowserRouter>
+// Root component contains the existing Routes structure
+function Root() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <LanguageProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <Toaster />
             <ScrollToTop />
             <ManifestSwitcher />
             <div className="overflow-x-hidden w-full">
@@ -78,12 +79,23 @@ const App = () => (
               </Routes>
               <WhatsAppButton />
             </div>
-          </BrowserRouter>
-        </TooltipProvider>
-      </CartProvider>
-    </LanguageProvider>
-  </QueryClientProvider>
-);
+          </TooltipProvider>
+        </CartProvider>
+      </LanguageProvider>
+    </QueryClientProvider>
+  );
+}
+
+// Create router singleton
+const router = createBrowserRouter([
+  {
+    path: "*",
+    element: <Root />,
+  },
+]);
+
+// New App component renders RouterProvider
+const App = () => <RouterProvider router={router} />;
 
 export default App;
 

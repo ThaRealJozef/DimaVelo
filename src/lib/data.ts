@@ -19,7 +19,7 @@ export const categories: Category[] = [
     descriptionFr: 'Produits en promotion avec réductions',
     descriptionEn: 'Discounted products on sale',
     descriptionAr: 'المنتجات المخفضة',
-    imageUrl: '/assets/category-promotions.jpg',
+    imageUrl: '/assets/category-promotions.webp',
     displayOrder: 0,
   },
   {
@@ -31,7 +31,7 @@ export const categories: Category[] = [
     descriptionFr: 'Découvrez notre sélection de vélos pour tous les niveaux',
     descriptionEn: 'Discover our selection of bikes for all levels',
     descriptionAr: 'اكتشف مجموعتنا من الدراجات لجميع المستويات',
-    imageUrl: '/assets/category-velos.jpg',
+    imageUrl: '/assets/category-velos.webp',
     displayOrder: 1,
   },
   {
@@ -43,7 +43,7 @@ export const categories: Category[] = [
     descriptionFr: 'Équipez-vous avec nos accessoires de qualité',
     descriptionEn: 'Equip yourself with our quality accessories',
     descriptionAr: 'جهز نفسك بملحقاتنا عالية الجودة',
-    imageUrl: '/assets/category-accessoires.jpg',
+    imageUrl: '/assets/category-accessoires.webp',
     displayOrder: 2,
   },
   {
@@ -55,7 +55,7 @@ export const categories: Category[] = [
     descriptionFr: 'Vêtements de cyclisme pour tous les temps',
     descriptionEn: 'Cycling clothing for all weather',
     descriptionAr: 'ملابس ركوب الدراجات لجميع الأحوال الجوية',
-    imageUrl: '/assets/category-vetements.jpg',
+    imageUrl: '/assets/category-vetements.webp',
     displayOrder: 3,
   },
   {
@@ -67,7 +67,7 @@ export const categories: Category[] = [
     descriptionFr: 'Chaussures de cyclisme pour route et VTT',
     descriptionEn: 'Cycling shoes for road and mountain biking',
     descriptionAr: 'أحذية ركوب الدراجات للطريق والجبال',
-    imageUrl: '/assets/category-chaussures.jpg',
+    imageUrl: '/assets/category-chaussures.webp',
     displayOrder: 4,
   },
   {
@@ -79,7 +79,7 @@ export const categories: Category[] = [
     descriptionFr: 'Compléments et nutrition pour cyclistes',
     descriptionEn: 'Supplements and nutrition for cyclists',
     descriptionAr: 'المكملات والتغذية للدراجين',
-    imageUrl: '/assets/category-nutritions.png',
+    imageUrl: '/assets/category-nutritions.webp',
     displayOrder: 5,
   },
 ];

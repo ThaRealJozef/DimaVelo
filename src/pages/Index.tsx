@@ -35,8 +35,8 @@ function getLocalizedText<T extends LocalizedItem>(item: T, field: 'name' | 'des
 function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <div className="text-center mb-8 md:mb-12">
-      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4 break-words px-4">{title}</h2>
-      {subtitle && <p className="text-gray-600 max-w-2xl mx-auto break-words px-4">{subtitle}</p>}
+      <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4 wrap-break-word px-4">{title}</h2>
+      {subtitle && <p className="text-gray-600 max-w-2xl mx-auto wrap-break-word px-4">{subtitle}</p>}
     </div>
   );
 }
@@ -47,8 +47,8 @@ function FeatureCard({ icon: Icon, title, description }: { icon: typeof Shopping
       <div className="w-14 h-14 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
         <Icon className="h-7 w-7 md:h-8 md:w-8 text-green-600" />
       </div>
-      <h3 className="font-semibold text-lg md:text-xl mb-2 break-words">{title}</h3>
-      <p className="text-gray-600 text-sm md:text-base break-words">{description}</p>
+      <h3 className="font-semibold text-lg md:text-xl mb-2 wrap-break-word">{title}</h3>
+      <p className="text-gray-600 text-sm md:text-base wrap-break-word">{description}</p>
     </div>
   );
 }
@@ -98,14 +98,14 @@ export default function Index() {
         <section className="relative bg-green-600 text-white py-12 md:py-20 overflow-hidden">
           <div className="container px-4">
             <div className="max-w-3xl">
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 break-words">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 wrap-break-word">
                 {t.home.hero.title}
               </h1>
-              <p className="text-lg md:text-xl mb-6 md:mb-8 break-words opacity-95">
+              <p className="text-lg md:text-xl mb-6 md:mb-8 wrap-break-word opacity-95">
                 {t.home.hero.subtitle}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6">
-                <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto">
+                <Button asChild size="lg" variant="outline" className="w-full sm:w-auto bg-transparent border-white text-white hover:bg-white hover:text-green-600">
                   <Link to="/categories">
                     <ShoppingCart className="mr-2 h-5 w-5" />
                     {t.home.hero.cta}
@@ -176,8 +176,8 @@ export default function Index() {
         {/* CTA */}
         <section className="py-12 md:py-16 bg-green-600 text-white overflow-hidden">
           <div className="container text-center px-4">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 break-words">{t.home.cta.title}</h2>
-            <p className="text-lg md:text-xl mb-6 md:mb-8 text-green-50 break-words">{t.home.cta.subtitle}</p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 wrap-break-word">{t.home.cta.title}</h2>
+            <p className="text-lg md:text-xl mb-6 md:mb-8 text-green-50 wrap-break-word">{t.home.cta.subtitle}</p>
             <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto">
               <Link to="/contact">
                 {t.home.cta.button}

@@ -36,7 +36,7 @@ function LoadingState({ text }: { text: string }) {
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-bold text-lg md:text-xl mb-6 break-words text-gray-900 flex items-center gap-2">
+    <h2 className="font-bold text-lg md:text-xl mb-6 wrap-break-word text-gray-900 flex items-center gap-2">
       <span className="w-1 h-6 bg-green-600 rounded-full inline-block" />
       {children}
     </h2>
@@ -47,18 +47,18 @@ function ProductPrice({ product }: { product: Product }) {
   if (product.discountedPrice && product.originalPrice) {
     const savings = product.originalPrice - product.discountedPrice;
     return (
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-lg md:text-xl font-bold text-red-600">{product.discountedPrice.toLocaleString()} DH</span>
-          <span className="text-sm text-gray-400 line-through">{product.originalPrice.toLocaleString()} DH</span>
+      <div className="flex flex-col gap-0.5 md:gap-1">
+        <div className="flex items-center gap-1.5 md:gap-2 flex-wrap">
+          <span className="text-base md:text-xl font-bold text-red-600">{product.discountedPrice.toLocaleString()} DH</span>
+          <span className="text-[10px] md:text-sm text-gray-400 line-through">{product.originalPrice.toLocaleString()} DH</span>
         </div>
-        <span className="text-xs font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded w-fit">
-          {savings.toLocaleString()} DH d'économie
+        <span className="text-[10px] md:text-xs font-medium text-red-600 bg-red-50 px-1.5 py-0.5 rounded w-fit">
+          -{savings.toLocaleString()} DH
         </span>
       </div>
     );
   }
-  return <span className="text-lg md:text-xl font-bold text-green-600 break-words">{product.price.toLocaleString()} DH</span>;
+  return <span className="text-base md:text-xl font-bold text-green-600 wrap-break-word">{product.price.toLocaleString()} DH</span>;
 }
 
 function ProductCard({ product, language, buttonText }: { product: Product; language: Language; buttonText: string }) {
@@ -69,7 +69,7 @@ function ProductCard({ product, language, buttonText }: { product: Product; lang
   return (
     <Link to={`/product/${product.id}`} className="group">
       <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
-        <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
+        <div className="aspect-square overflow-hidden bg-gray-100 shrink-0">
           <img
             src={product.images?.[0] || defaultImg}
             alt={name}
@@ -77,12 +77,12 @@ function ProductCard({ product, language, buttonText }: { product: Product; lang
           />
         </div>
         <CardContent className="p-3 md:p-4 flex-1 flex flex-col">
-          <h3 className="font-semibold text-base md:text-lg mb-2 break-words">{name}</h3>
-          <p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2 break-words">{description}</p>
+          <h3 className="font-semibold text-sm md:text-lg mb-1 md:mb-2 line-clamp-1 wrap-break-word">{name}</h3>
+          <p className="text-[10px] md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2 wrap-break-word">{description}</p>
           <div className="flex flex-col gap-1 mt-auto">
             <ProductPrice product={product} />
           </div>
-          <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full sm:w-auto">
+          <Button size="sm" className="bg-green-600 hover:bg-green-700 w-full sm:w-auto text-xs md:text-sm h-8 md:h-10">
             {buttonText}
           </Button>
         </CardContent>
@@ -107,12 +107,12 @@ function CategoryCard({
   return (
     <Link to={to} className="group">
       <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
-        <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0">
+        <div className="aspect-square overflow-hidden bg-gray-100 shrink-0">
           <img src={category.imageUrl} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         </div>
         <CardContent className="p-3 md:p-4 flex-1 flex flex-col">
-          <h3 className="font-semibold text-base md:text-lg mb-2 break-words">{name}</h3>
-          <p className="text-xs md:text-sm text-gray-600 mb-3 break-words flex-1">{description}</p>
+          <h3 className="font-semibold text-base md:text-lg mb-2 wrap-break-word">{name}</h3>
+          <p className="text-xs md:text-sm text-gray-600 mb-3 wrap-break-word flex-1">{description}</p>
           <Button size="sm" className="w-full bg-green-600 hover:bg-green-700 mt-auto">{buttonText}</Button>
         </CardContent>
       </Card>
@@ -120,16 +120,20 @@ function CategoryCard({
   );
 }
 
-function Breadcrumb({ items }: { items: { to?: string; label: string }[] }) {
+function Breadcrumb({ items, variant = 'default' }: { items: { to?: string; label: string }[], variant?: 'default' | 'light' }) {
+  const textColor = variant === 'light' ? 'text-green-50' : 'text-gray-600';
+  const activeColor = variant === 'light' ? 'text-white' : 'text-gray-900';
+  const hoverColor = variant === 'light' ? 'hover:text-white' : 'hover:text-green-600';
+
   return (
-    <div className="flex items-center gap-2 text-xs md:text-sm text-gray-600 mb-4 md:mb-6 overflow-x-auto whitespace-nowrap pb-2">
+    <div className={`flex items-center gap-2 text-xs md:text-sm ${textColor} mb-4 md:mb-6 overflow-x-auto whitespace-nowrap pb-2`}>
       {items.map((item, i) => (
         <span key={i} className="flex items-center gap-2">
-          {i > 0 && <ChevronRight className="h-4 w-4 flex-shrink-0" />}
+          {i > 0 && <ChevronRight className="h-4 w-4 shrink-0" />}
           {item.to ? (
-            <Link to={item.to} className="hover:text-green-600 flex-shrink-0">{item.label}</Link>
+            <Link to={item.to} className={`${hoverColor} shrink-0`}>{item.label}</Link>
           ) : (
-            <span className="text-gray-900 font-medium break-words">{item.label}</span>
+            <span className={`${activeColor} font-medium wrap-break-word`}>{item.label}</span>
           )}
         </span>
       ))}
@@ -189,10 +193,10 @@ export default function CategoriesPage() {
       <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
         <Header />
         <main className="flex-1 overflow-hidden">
-          <div className="bg-green-50/50 py-8 md:py-12 mb-8">
+          <div className="bg-linear-to-r from-green-600 to-green-800 py-8 md:py-12 mb-8">
             <div className="container px-4">
-              <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 break-words">{t.categories.title}</h1>
-              <p className="text-gray-600 max-w-2xl text-lg">{t.categories.subtitle}</p>
+              <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-8 wrap-break-word text-white">{t.categories.title}</h1>
+              <p className="text-green-50 max-w-2xl text-lg">{t.categories.subtitle}</p>
             </div>
           </div>
           <div className="container px-4 pb-12">
@@ -212,7 +216,7 @@ export default function CategoriesPage() {
     <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
       <Header />
       <main className="flex-1 overflow-hidden">
-        <div className="bg-green-50/50 py-8 mb-8">
+        <div className="bg-linear-to-r from-green-600 to-green-800 py-8 mb-8">
           <div className="container px-4">
             <Breadcrumb
               items={[
@@ -220,8 +224,9 @@ export default function CategoriesPage() {
                 { to: '/categories', label: t.categories.title },
                 { label: getLocalizedField(currentCategory, 'name', lang) },
               ]}
+              variant="light"
             />
-            <h1 className="text-3xl md:text-4xl font-bold break-words text-gray-900">
+            <h1 className="text-3xl md:text-4xl font-bold wrap-break-word text-white">
               {getLocalizedField(currentCategory, 'name', lang)}
             </h1>
           </div>
@@ -235,11 +240,11 @@ export default function CategoriesPage() {
 
                 {categorySubcategories.length > 0 && (
                   <div className="mb-6">
-                    <h3 className="font-medium mb-3 text-sm md:text-base break-words">{t.common.subcategory}</h3>
+                    <h3 className="font-medium mb-3 text-sm md:text-base wrap-break-word">{t.common.subcategory}</h3>
                     <div className="space-y-2">
                       <Button
                         variant={selectedSubcategory === 'all' ? 'default' : 'outline'}
-                        className="w-full justify-start text-sm break-words"
+                        className="w-full justify-start text-sm wrap-break-word"
                         onClick={() => handleSubcategoryClick('all')}
                       >
                         {t.categories.allSubcategories}
@@ -248,7 +253,7 @@ export default function CategoriesPage() {
                         <Button
                           key={sub.id}
                           variant={selectedSubcategory === sub.id ? 'default' : 'outline'}
-                          className="w-full justify-start text-sm break-words"
+                          className="w-full justify-start text-sm wrap-break-word"
                           onClick={() => handleSubcategoryClick(sub.id)}
                         >
                           {getLocalizedField(sub, 'name', lang)}
@@ -259,7 +264,7 @@ export default function CategoriesPage() {
                 )}
 
                 <div>
-                  <h3 className="font-medium mb-3 text-sm md:text-base break-words">{t.categories.priceRange}</h3>
+                  <h3 className="font-medium mb-3 text-sm md:text-base wrap-break-word">{t.categories.priceRange}</h3>
                   <Slider min={0} max={50000} step={500} value={priceRange} onValueChange={setPriceRange} className="mb-4" />
                   <div className="flex justify-between text-xs md:text-sm text-gray-600">
                     <span>{priceRange[0].toLocaleString()} DH</span>
@@ -274,11 +279,11 @@ export default function CategoriesPage() {
             </div>
 
             <div className="lg:col-span-3">
-              <div className="mb-4 text-sm md:text-base text-gray-600 break-words">
+              <div className="mb-4 text-sm md:text-base text-gray-600 wrap-break-word">
                 {filteredProducts.length} {t.categories.productsFound}
               </div>
 
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} language={lang} buttonText={t.common.viewDetails} />
                 ))}
@@ -286,7 +291,7 @@ export default function CategoriesPage() {
 
               {filteredProducts.length === 0 && (
                 <div className="text-center py-12 px-4">
-                  <p className="text-gray-600 text-base md:text-lg break-words">{t.categories.noProducts}</p>
+                  <p className="text-gray-600 text-base md:text-lg wrap-break-word">{t.categories.noProducts}</p>
                 </div>
               )}
             </div>
