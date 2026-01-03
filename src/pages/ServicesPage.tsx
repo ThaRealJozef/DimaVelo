@@ -41,17 +41,17 @@ function ServiceCard({
     <Card className="hover:shadow-lg transition-shadow overflow-hidden h-full flex flex-col">
       <CardHeader className="p-4 md:p-6">
         <div className="flex items-center gap-3 mb-2">
-          <span className="text-3xl md:text-4xl flex-shrink-0">{service.icon}</span>
-          <CardTitle className="text-lg md:text-xl break-words">{translation.title}</CardTitle>
+          <span className="text-3xl md:text-4xl shrink-0">{service.icon}</span>
+          <CardTitle className="text-lg md:text-xl wrap-break-word">{translation.title}</CardTitle>
         </div>
-        <CardDescription className="text-xs md:text-sm leading-relaxed break-words flex-1">
+        <CardDescription className="text-xs md:text-sm leading-relaxed wrap-break-word flex-1">
           {translation.desc}
         </CardDescription>
       </CardHeader>
       <CardContent className="p-4 md:p-6 pt-0 mt-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-          <span className="text-base md:text-lg font-bold text-green-600 break-words">{priceText}</span>
-          <span className="text-xs md:text-sm text-gray-600 break-words">{durationText}</span>
+          <span className="text-base md:text-lg font-bold text-green-600 wrap-break-word">{priceText}</span>
+          <span className="text-xs md:text-sm text-gray-600 wrap-break-word">{durationText}</span>
         </div>
       </CardContent>
     </Card>
@@ -157,14 +157,14 @@ export default function ServicesPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
+    <div className="min-h-screen flex flex-col w-full">
       <Header />
 
       <main className="flex-1 overflow-hidden">
-        <section className="relative bg-gradient-to-r from-green-600 to-green-800 text-white py-12 md:py-16 overflow-hidden">
+        <section className="relative bg-linear-to-r from-green-600 to-green-800 text-white py-12 md:py-16 overflow-hidden">
           <div className="container px-4">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 break-words">{t.services.title}</h1>
-            <p className="text-lg md:text-xl text-green-100 break-words">{t.services.subtitle}</p>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 wrap-break-word">{t.services.title}</h1>
+            <p className="text-lg md:text-xl text-green-100 wrap-break-word">{t.services.subtitle}</p>
           </div>
         </section>
 
@@ -185,8 +185,8 @@ export default function ServicesPage() {
             <div className="max-w-2xl mx-auto">
               <Card className="overflow-hidden">
                 <CardHeader className="p-4 md:p-6">
-                  <CardTitle className="text-xl md:text-2xl break-words">{t.services.bookService}</CardTitle>
-                  <CardDescription className="text-sm md:text-base break-words">{t.services.bookingDesc}</CardDescription>
+                  <CardTitle className="text-xl md:text-2xl wrap-break-word">{t.services.bookService}</CardTitle>
+                  <CardDescription className="text-sm md:text-base wrap-break-word">{t.services.bookingDesc}</CardDescription>
                 </CardHeader>
                 <CardContent className="p-4 md:p-6">
                   <form onSubmit={handleSubmit} className="space-y-4">

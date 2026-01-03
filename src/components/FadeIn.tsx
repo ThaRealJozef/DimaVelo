@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion, Variants } from 'framer-motion';
 import { ReactNode } from 'react';
 
 interface FadeInProps {
@@ -6,13 +6,41 @@ interface FadeInProps {
     delay?: number;
     duration?: number;
     className?: string;
+    direction?: 'up' | 'down' | 'left' | 'right';
+    distance?: number;
+    once?: boolean;
 }
 
-export function FadeIn({ children, delay = 0, duration = 0.25, className = '' }: FadeInProps) {
+function getInitialState(direction: FadeInProps['direction'], distance: number) {
+    switch (direction) {
+        case 'up': return { opacity: 0, y: distance };
+        case 'down': return { opacity: 0, y: -distance };
+        case 'left': return { opacity: 0, x: distance };
+        case 'right': return { opacity: 0, x: -distance };
+        default: return { opacity: 0, y: distance };
+    }
+}
+
+export function FadeIn({
+    children,
+    delay = 0,
+    duration = 0.5,
+    className = '',
+    direction = 'up',
+    distance = 30,
+    once = true
+}: FadeInProps) {
+    const shouldReduceMotion = useReducedMotion();
+
+    if (shouldReduceMotion) {
+        return <div className={className}>{children}</div>;
+    }
+
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={getInitialState(direction, distance)}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once, margin: "-50px" }}
             transition={{
                 duration,
                 delay,
@@ -29,13 +57,26 @@ interface StaggerContainerProps {
     children: ReactNode;
     className?: string;
     staggerDelay?: number;
+    once?: boolean;
 }
 
-export function StaggerContainer({ children, className = '', staggerDelay = 0.05 }: StaggerContainerProps) {
+export function StaggerContainer({
+    children,
+    className = '',
+    staggerDelay = 0.1,
+    once = true
+}: StaggerContainerProps) {
+    const shouldReduceMotion = useReducedMotion();
+
+    if (shouldReduceMotion) {
+        return <div className={className}>{children}</div>;
+    }
+
     return (
         <motion.div
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once, margin: "-50px" }}
             variants={{
                 visible: {
                     transition: {
@@ -50,23 +91,29 @@ export function StaggerContainer({ children, className = '', staggerDelay = 0.05
     );
 }
 
+const staggerItemVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.4,
+            ease: [0.22, 1, 0.36, 1],
+        },
+    },
+};
+
 export function StaggerItem({ children, className = '' }: { children: ReactNode; className?: string }) {
+    const shouldReduceMotion = useReducedMotion();
+
+    if (shouldReduceMotion) {
+        return <div className={className}>{children}</div>;
+    }
+
     return (
-        <motion.div
-            variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                        duration: 0.25,
-                        ease: [0.25, 0.1, 0.25, 1],
-                    },
-                },
-            }}
-            className={className}
-        >
+        <motion.div variants={staggerItemVariants} className={className}>
             {children}
         </motion.div>
     );
 }
+

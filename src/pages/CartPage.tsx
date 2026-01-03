@@ -61,7 +61,7 @@ function CartItemCard({
         <Card>
             <CardContent className="p-4 md:p-6">
                 <div className="flex gap-4">
-                    <Link to={`/product/${item.productId}`} className="flex-shrink-0">
+                    <Link to={`/product/${item.productId}`} className="shrink-0">
                         <img
                             src={item.image}
                             alt={item.name}
@@ -71,7 +71,7 @@ function CartItemCard({
 
                     <div className="flex-1 min-w-0">
                         <Link to={`/product/${item.productId}`}>
-                            <h3 className="font-semibold text-lg mb-2 break-words hover:text-green-600 transition-colors">
+                            <h3 className="font-semibold text-lg mb-2 wrap-break-word hover:text-green-600 transition-colors">
                                 {item.name}
                             </h3>
                         </Link>
@@ -164,7 +164,7 @@ function CitySelector({
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+                <PopoverContent className="w-(--radix-popover-trigger-width) p-0">
                     <Command>
                         <CommandInput placeholder={`${placeholder}...`} />
                         <CommandList>
@@ -293,7 +293,7 @@ ${customerInfo.notes ? `NOTES:\n${customerInfo.notes}\n\n` : ''}Merci d'avoir ch
 
     if (cartItems.length === 0) {
         return (
-            <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
+            <div className="min-h-screen flex flex-col w-full">
                 <Header />
                 <main className="flex-1 py-8 overflow-hidden">
                     <div className="container px-4">
@@ -316,7 +316,7 @@ ${customerInfo.notes ? `NOTES:\n${customerInfo.notes}\n\n` : ''}Merci d'avoir ch
     }
 
     return (
-        <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
+        <div className="min-h-screen flex flex-col w-full">
             <Header />
             <main className="flex-1 py-8 overflow-hidden">
                 <div className="container px-4">

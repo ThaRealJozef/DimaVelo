@@ -36,7 +36,7 @@ function getLocalizedText(item: LocalizedItem, field: 'name' | 'description', la
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-lg md:text-xl font-bold mb-4 break-words text-gray-900 flex items-center gap-2">
+    <h2 className="text-lg md:text-xl font-bold mb-4 wrap-break-word text-gray-900 flex items-center gap-2">
       <span className="w-1 h-6 bg-green-600 rounded-full inline-block" />
       {children}
     </h2>
@@ -97,7 +97,7 @@ function RelatedProductCard({
     <CarouselItem className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4">
       <Link to={`/product/${product.id}`} className="group">
         <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col">
-          <div className="aspect-square overflow-hidden bg-gray-100 flex-shrink-0 relative">
+          <div className="aspect-square overflow-hidden bg-gray-100 shrink-0 relative">
             <img
               src={product.images?.[0] || defaultImg}
               alt={name}
@@ -110,8 +110,8 @@ function RelatedProductCard({
             )}
           </div>
           <CardContent className="p-3 md:p-4 flex-1 flex flex-col">
-            <h3 className="font-semibold text-base md:text-lg mb-2 break-words">{name}</h3>
-            <p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2 break-words">{description}</p>
+            <h3 className="font-semibold text-base md:text-lg mb-2 wrap-break-word">{name}</h3>
+            <p className="text-xs md:text-sm text-gray-600 mb-3 line-clamp-2 wrap-break-word">{description}</p>
             <div className="flex flex-col gap-1 mt-auto">
               {product.discountedPrice && product.originalPrice ? (
                 <div className="flex flex-col gap-1">
@@ -129,7 +129,7 @@ function RelatedProductCard({
                   </span>
                 </div>
               ) : (
-                <span className="text-lg md:text-xl font-bold text-green-600 break-words">
+                <span className="text-lg md:text-xl font-bold text-green-600 wrap-break-word">
                   {product.price.toLocaleString()} DH
                 </span>
               )}
@@ -178,7 +178,7 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col overflow-x-hidden">
+      <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 container py-16 flex items-center justify-center px-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600" />
@@ -192,11 +192,11 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex flex-col overflow-x-hidden">
+      <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 container py-16 px-4">
           <div className="text-center">
-            <h1 className="text-2xl md:text-3xl font-bold mb-4 break-words">{t.product.notFound}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 wrap-break-word">{t.product.notFound}</h1>
             <Button asChild className="w-full sm:w-auto">
               <Link to="/categories">
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -230,7 +230,7 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
+    <div className="min-h-screen flex flex-col w-full">
       <Header />
 
       <main className="flex-1 py-8 overflow-hidden">
@@ -246,7 +246,7 @@ export default function ProductPage() {
             <ProductImageGallery images={product.images || []} productName={productName} />
 
             <div className="w-full overflow-hidden">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 break-words">{productName}</h1>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 wrap-break-word">{productName}</h1>
 
               <div className="flex items-center gap-2 mb-4 md:mb-6">
                 <Badge variant={product.isAvailable ? 'default' : 'secondary'}>
@@ -254,13 +254,13 @@ export default function ProductPage() {
                 </Badge>
               </div>
 
-              <div className="mb-4 md:mb-6 break-words">
+              <div className="mb-4 md:mb-6 wrap-break-word">
                 <ProductPrice product={product} />
               </div>
 
               <div className="prose max-w-none mb-6 md:mb-8">
                 <SectionHeading>{t.product.description}</SectionHeading>
-                <p className="text-gray-600 text-sm md:text-base break-words">{productDescription}</p>
+                <p className="text-gray-600 text-sm md:text-base wrap-break-word">{productDescription}</p>
               </div>
 
               {product.specifications && Object.keys(product.specifications).length > 0 && (
@@ -271,8 +271,8 @@ export default function ProductPage() {
                       <dl className="space-y-2">
                         {Object.entries(product.specifications).map(([key, value]) => (
                           <div key={key} className="flex flex-col sm:flex-row sm:justify-between py-2 border-b last:border-0 gap-1">
-                            <dt className="font-medium text-gray-700 text-sm md:text-base break-words">{key}</dt>
-                            <dd className="text-gray-600 text-sm md:text-base break-words">{value}</dd>
+                            <dt className="font-medium text-gray-700 text-sm md:text-base wrap-break-word">{key}</dt>
+                            <dd className="text-gray-600 text-sm md:text-base wrap-break-word">{value}</dd>
                           </div>
                         ))}
                       </dl>

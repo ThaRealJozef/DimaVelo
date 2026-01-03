@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect, useRef, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -178,7 +178,7 @@ function MobileMenuItem({ children, to, onClick, hasArrow, isPromo, icon }: Mobi
       {icon && <span className="mr-3">{icon}</span>}
       <span className="relative z-10">{children}</span>
       {hasArrow && <ChevronRight className="h-6 w-6 relative z-10 group-hover:translate-x-1 transition-transform" />}
-      <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r from-transparent via-green-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
     </>
   );
 
@@ -223,19 +223,23 @@ export function Header() {
     setSelectedCategoryId(null);
   };
 
+  const scrollPosition = useRef(0);
+
   useEffect(() => {
     if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      scrollPosition.current = window.scrollY;
       document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollPosition.current}px`;
       document.body.style.width = '100%';
     } else {
-      document.body.style.overflow = '';
       document.body.style.position = '';
+      document.body.style.top = '';
       document.body.style.width = '';
+      window.scrollTo(0, scrollPosition.current);
     }
     return () => {
-      document.body.style.overflow = '';
       document.body.style.position = '';
+      document.body.style.top = '';
       document.body.style.width = '';
     };
   }, [mobileMenuOpen]);
@@ -281,9 +285,9 @@ export function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200/50 bg-white/80 backdrop-blur-md shadow-sm">
       <div className="container flex h-16 md:h-24 items-center justify-between px-4">
-        <Link to="/" className="flex items-center flex-shrink-0">
+        <Link to="/" className="flex items-center shrink-0">
           <img src="/logo.png" alt="Dima Vélo" className="h-12 md:h-20 w-auto object-contain" />
         </Link>
 
@@ -440,7 +444,7 @@ export function Header() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={springTransition}
-              className="fixed inset-0 bg-white z-[9999] md:hidden"
+              className="fixed inset-0 bg-white z-9999 md:hidden"
             >
               {/* Logo */}
               <div className="absolute top-4 left-4 z-10">
@@ -457,7 +461,7 @@ export function Header() {
               </div>
 
               {/* Menu Content */}
-              <div className="relative h-full flex flex-col bg-gradient-to-br from-white via-green-50/30 to-white">
+              <div className="relative h-full flex flex-col bg-linear-to-br from-white via-green-50/30 to-white">
                 <div className="pt-8 pb-6 px-6 border-b border-green-100/50 flex flex-col items-center">
                   <h2 className="text-xl font-bold mb-4">Menu</h2>
                 </div>
@@ -606,14 +610,14 @@ export function Header() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setCartDrawerOpen(false)}
-                className="md:hidden fixed inset-0 bg-black/50 z-[90]"
+                className="md:hidden fixed inset-0 bg-black/50 z-90"
               />
               <motion.div
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={fastSpringTransition}
-                className="md:hidden fixed right-0 top-0 h-full w-full max-w-sm bg-white z-[100] shadow-2xl flex flex-col"
+                className="md:hidden fixed right-0 top-0 h-full w-full max-w-sm bg-white z-100 shadow-2xl flex flex-col"
               >
                 <div className="p-4 border-b flex items-center justify-between">
                   <h2 className="text-xl font-semibold">{t.cart.title}</h2>

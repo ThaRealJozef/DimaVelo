@@ -26,9 +26,9 @@ const MAP_URL = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106451.0!
 function ContactInfoRow({ icon: Icon, title, children }: { icon: LucideIcon; title: string; children: ReactNode }) {
   return (
     <div className="flex items-start gap-3 md:gap-4">
-      <Icon className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
+      <Icon className="h-5 w-5 text-green-600 mt-1 shrink-0" />
       <div className="overflow-hidden">
-        <h3 className="font-semibold mb-1 text-sm md:text-base break-words">{title}</h3>
+        <h3 className="font-semibold mb-1 text-sm md:text-base wrap-break-word">{title}</h3>
         {children}
       </div>
     </div>
@@ -90,14 +90,14 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
+    <div className="min-h-screen flex flex-col w-full">
       <Header />
 
       <main className="flex-1 overflow-hidden">
-        <section className="relative bg-gradient-to-r from-green-600 to-green-800 text-white py-12 md:py-16 overflow-hidden">
+        <section className="relative bg-linear-to-r from-green-600 to-green-800 text-white py-12 md:py-16 overflow-hidden">
           <div className="container px-4">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 break-words">{t.contact.title}</h1>
-            <p className="text-lg md:text-xl text-green-100 break-words">{t.contact.subtitle}</p>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 wrap-break-word">{t.contact.title}</h1>
+            <p className="text-lg md:text-xl text-green-100 wrap-break-word">{t.contact.subtitle}</p>
           </div>
         </section>
 
@@ -106,8 +106,8 @@ export default function ContactPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
               <Card className="overflow-hidden">
                 <CardHeader className="p-4 md:p-6">
-                  <CardTitle className="text-xl md:text-2xl break-words">{t.contact.send}</CardTitle>
-                  <CardDescription className="text-sm md:text-base break-words">
+                  <CardTitle className="text-xl md:text-2xl wrap-break-word">{t.contact.send}</CardTitle>
+                  <CardDescription className="text-sm md:text-base wrap-break-word">
                     Remplissez le formulaire et nous vous répondrons dans les plus brefs délais
                   </CardDescription>
                 </CardHeader>
@@ -161,15 +161,15 @@ export default function ContactPage() {
               <div className="space-y-6">
                 <Card className="overflow-hidden">
                   <CardHeader className="p-4 md:p-6">
-                    <CardTitle className="text-xl md:text-2xl break-words">{t.contact.info}</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl wrap-break-word">{t.contact.info}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4 p-4 md:p-6">
                     <ContactInfoRow icon={MapPin} title={t.contact.address}>
-                      <p className="text-gray-600 text-sm md:text-base break-words">{t.contact.addressValue}</p>
+                      <p className="text-gray-600 text-sm md:text-base wrap-break-word">{t.contact.addressValue}</p>
                     </ContactInfoRow>
 
                     <ContactInfoRow icon={Phone} title={t.contact.phone}>
-                      <a href="tel:+212631532200" className="text-green-600 hover:underline text-sm md:text-base break-words">
+                      <a href="tel:+212631532200" className="text-green-600 hover:underline text-sm md:text-base wrap-break-word">
                         {PHONE}
                       </a>
                     </ContactInfoRow>
@@ -181,14 +181,14 @@ export default function ContactPage() {
                     </ContactInfoRow>
 
                     <ContactInfoRow icon={Clock} title={t.contact.hours}>
-                      <p className="text-gray-600 text-sm md:text-base break-words">{t.contact.hoursValue}</p>
+                      <p className="text-gray-600 text-sm md:text-base wrap-break-word">{t.contact.hoursValue}</p>
                     </ContactInfoRow>
                   </CardContent>
                 </Card>
 
                 <Card className="overflow-hidden">
                   <CardHeader className="p-4 md:p-6">
-                    <CardTitle className="text-xl md:text-2xl break-words">{t.contact.location}</CardTitle>
+                    <CardTitle className="text-xl md:text-2xl wrap-break-word">{t.contact.location}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 md:p-6">
                     <div className="aspect-video rounded-lg overflow-hidden bg-gray-100 w-full">

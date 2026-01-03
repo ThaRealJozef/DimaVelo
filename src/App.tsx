@@ -52,7 +52,7 @@ function Root() {
             <Toaster />
             <ScrollToTop />
             <ManifestSwitcher />
-            <div className="overflow-x-hidden w-full">
+            <div className="w-full">
               <Routes>
                 <Route path="/" element={<PageTransition><Index /></PageTransition>} />
                 <Route path="/categories" element={<PageTransition><CategoriesPage /></PageTransition>} />

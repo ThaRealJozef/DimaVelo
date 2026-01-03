@@ -21,7 +21,7 @@ function getLocalizedField(item: any, field: string, lang: Language): string {
 
 function LoadingState({ text }: { text: string }) {
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden">
+    <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 container py-16 flex items-center justify-center px-4">
         <div className="text-center">
@@ -190,7 +190,7 @@ export default function CategoriesPage() {
 
   if (!currentCategory) {
     return (
-      <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
+      <div className="min-h-screen flex flex-col w-full">
         <Header />
         <main className="flex-1 overflow-hidden">
           <div className="bg-linear-to-r from-green-600 to-green-800 py-8 md:py-12 mb-8">
@@ -213,7 +213,7 @@ export default function CategoriesPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
+    <div className="min-h-screen flex flex-col w-full">
       <Header />
       <main className="flex-1 overflow-hidden">
         <div className="bg-linear-to-r from-green-600 to-green-800 py-8 mb-8">
