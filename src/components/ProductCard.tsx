@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Product } from '@/lib/types';
 import { formatPrice } from '@/lib/utils-bike';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { ProductConditionBadge } from '@/components/ProductConditionBadge';
 
 interface ProductCardProps {
   product: Product;
@@ -32,7 +33,7 @@ const imageVariants = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const shouldReduceMotion = useReducedMotion();
 
   // Fallback for reduced motion preference
@@ -40,12 +41,17 @@ export function ProductCard({ product }: ProductCardProps) {
     return (
       <div className="overflow-hidden rounded-lg border bg-white hover:shadow-lg transition-shadow h-full flex flex-col">
         <Link to={`/product/${product.id}`}>
-          <div className="aspect-square overflow-hidden bg-gray-100 shrink-0">
+          <div className="aspect-square overflow-hidden bg-gray-100 shrink-0 relative">
             <img
               src={product.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
               alt={product.nameFr}
               className="w-full h-full object-cover"
             />
+            {product.condition && product.condition !== 'new' && (
+              <div className="absolute top-2 left-2">
+                <ProductConditionBadge condition={product.condition} language={language} size="sm" />
+              </div>
+            )}
           </div>
         </Link>
         <CardContent className="p-4 flex-1 flex flex-col">
@@ -91,13 +97,18 @@ export function ProductCard({ product }: ProductCardProps) {
       className="overflow-hidden rounded-lg border bg-white h-full flex flex-col cursor-pointer"
     >
       <Link to={`/product/${product.id}`}>
-        <div className="aspect-square overflow-hidden bg-gray-100 shrink-0">
+        <div className="aspect-square overflow-hidden bg-gray-100 shrink-0 relative">
           <motion.img
             variants={imageVariants}
             src={product.images?.[0] || 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80'}
             alt={product.nameFr}
             className="w-full h-full object-cover"
           />
+          {product.condition && product.condition !== 'new' && (
+            <div className="absolute top-2 left-2">
+              <ProductConditionBadge condition={product.condition} language={language} size="sm" />
+            </div>
+          )}
         </div>
       </Link>
       <CardContent className="p-4 flex-1 flex flex-col">

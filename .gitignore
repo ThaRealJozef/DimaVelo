@@ -37,7 +37,6 @@ firebase-debug.log
 .firebase/
 
 # Editor/IDE
-.idea/
 .vscode/
 .vscode/extensions.json
 .vscode/settings.json
@@ -50,9 +49,6 @@ firebase-debug.log
 Thumbs.db
 Desktop.ini
 .DS_Store
-
-# Tool Specific
-.smart-coding-cache/
 
 # Documentation
 /docs

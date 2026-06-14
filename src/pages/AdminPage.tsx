@@ -30,7 +30,7 @@ import { formatPrice } from '@/lib/utils-bike';
 import { useProducts } from '@/hooks/useProducts';
 import { useBookings } from '@/hooks/useBookings';
 import { productService } from '@/services/productService';
-import { bookingService } from '@/services/bookingService';
+import { bookingService, Booking } from '@/services/bookingService';
 import { authService } from '@/services/authService';
 import { Product } from '@/lib/types';
 
@@ -64,7 +64,7 @@ function prepareProductData(data: ProductFormData, isNew: boolean, displayOrder?
   if (data.isFeatured && data.originalPrice) productData.originalPrice = toNumber(data.originalPrice);
   if (data.isFeatured && data.discountedPrice) productData.discountedPrice = toNumber(data.discountedPrice);
 
-  return productData as any;
+  return productData as unknown as Omit<Product, 'id'>;
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -186,7 +186,7 @@ function BookingCard({
   onConfirm,
   onCancel,
 }: {
-  booking: any;
+  booking: Booking;
   onConfirm: () => void;
   onCancel: () => void;
 }) {
@@ -359,7 +359,11 @@ export default function AdminPage() {
 
   const toggleSelectProduct = (productId: string) => {
     const newSelected = new Set(selectedProductIds);
-    newSelected.has(productId) ? newSelected.delete(productId) : newSelected.add(productId);
+    if (newSelected.has(productId)) {
+      newSelected.delete(productId);
+    } else {
+      newSelected.add(productId);
+    }
     setSelectedProductIds(newSelected);
   };
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 // Generic hook for data fetching to reduce boilerplate
-export function useDataFetcher<T>(fetchFn: () => Promise<T>, deps: any[] = []) {
+export function useDataFetcher<T>(fetchFn: () => Promise<T>, deps: unknown[] = []) {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

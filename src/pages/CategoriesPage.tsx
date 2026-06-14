@@ -14,6 +14,7 @@ import { Product } from '@/lib/types';
 
 type Language = 'fr' | 'en' | 'ar';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLocalizedField(item: any, field: string, lang: Language): string {
   const suffix = lang === 'ar' ? 'Ar' : lang === 'en' ? 'En' : 'Fr';
   return (item[`${field}${suffix}`] as string) || (item[`${field}Fr`] as string) || '';

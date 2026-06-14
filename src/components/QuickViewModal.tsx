@@ -14,7 +14,8 @@ type Language = 'fr' | 'en' | 'ar';
 
 function getLocalizedField(item: Product, field: string, lang: Language): string {
     const suffix = lang === 'ar' ? 'Ar' : lang === 'en' ? 'En' : 'Fr';
-    return (item as any)[`${field}${suffix}`] || (item as any)[`${field}Fr`] || '';
+    const record = item as unknown as Record<string, string>;
+    return record[`${field}${suffix}`] || record[`${field}Fr`] || '';
 }
 
 interface QuickViewModalProps {

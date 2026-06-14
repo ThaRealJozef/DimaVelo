@@ -44,6 +44,7 @@ export interface Product {
   viewCount?: number;
   originalPrice?: number;
   discountedPrice?: number;
+  condition?: 'new' | 'used' | 'outlet'; // Product condition for differentiation
 }
 
 export interface ContactRequest {

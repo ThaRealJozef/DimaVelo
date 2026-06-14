@@ -20,6 +20,7 @@ type Language = 'fr' | 'en' | 'ar';
 const smoothTransition = { duration: 0.15, ease: [0.25, 0.1, 0.25, 1] };
 const fadeTransition = { duration: 0.2 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLocalizedField(item: any, field: string, lang: Language): string {
   const langSuffix = lang === 'ar' ? 'Ar' : lang === 'en' ? 'En' : 'Fr';
   return item[`${field}${langSuffix}`] || item[`${field}Fr`] || '';
@@ -125,7 +126,9 @@ function useSearchHistory() {
     try {
       const saved = localStorage.getItem('searchHistory');
       if (saved) setHistory(JSON.parse(saved));
-    } catch { }
+    } catch {
+      // Ignore parsing errors
+    }
   }, []);
 
   const addToHistory = (query: string) => {

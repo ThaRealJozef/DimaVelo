@@ -15,7 +15,7 @@ import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
 import AdminPage from './pages/AdminPage';
 import LoginPage from './pages/LoginPage';
-import TestImageUpload from '@/components/TestImageUpload';
+// import TestImageUpload from '@/components/TestImageUpload';
 import PromotionsPage from './pages/PromotionsPage';
 import CartPage from './pages/CartPage';
 import FAQPage from './pages/FAQPage';
@@ -75,7 +75,8 @@ function Root() {
                     </PageTransition>
                   }
                 />
-                <Route path="/test-upload" element={<PageTransition><TestImageUpload /></PageTransition>} />
+                {/* Disabled test route - security audit requirement */}
+                {/* <Route path="/test-upload" element={<PageTransition><TestImageUpload /></PageTransition>} /> */}
               </Routes>
               <WhatsAppButton />
             </div>

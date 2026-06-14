@@ -343,25 +343,6 @@ export function Header() {
             </div>
           </div>
 
-          {/* Services Dropdown */}
-          <div className="group relative">
-            <Button variant="ghost" className="text-sm lg:text-base">{t.nav.services}</Button>
-            <div className="absolute left-0 top-full pt-2 hidden group-hover:block z-50">
-              <div className="bg-white rounded-lg shadow-lg border py-2 min-w-[220px]">
-                {servicesData.map((service) => (
-                  <Link
-                    key={service.id}
-                    to={`/services?service=${service.id}`}
-                    className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 text-sm"
-                  >
-                    <span className="text-lg">{service.icon}</span>
-                    <span>{t.services?.[service.id as keyof typeof t.services] || service.id}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
           <Button variant="ghost" asChild className="text-sm lg:text-base">
             <Link to="/faq">{t.nav.faq}</Link>
           </Button>
@@ -464,6 +445,10 @@ export function Header() {
               <div className="relative h-full flex flex-col bg-linear-to-br from-white via-green-50/30 to-white">
                 <div className="pt-8 pb-6 px-6 border-b border-green-100/50 flex flex-col items-center">
                   <h2 className="text-xl font-bold mb-4">Menu</h2>
+                  {/* Language Toggle in Header for better visibility */}
+                  <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-green-100">
+                    <LanguageSwitcher />
+                  </div>
                 </div>
 
                 <div className="flex-1 flex flex-col overflow-hidden">
@@ -487,21 +472,13 @@ export function Header() {
                           <MenuDivider />
                           <MobileMenuItem hasArrow onClick={() => setMobileView('categories')}>{t.nav.categories}</MobileMenuItem>
                           <MenuDivider />
-                          <MobileMenuItem hasArrow onClick={() => setMobileView('services')}>{t.nav.services}</MobileMenuItem>
-                          <MenuDivider />
                           <MobileMenuItem to="/contact" onClick={closeMobileMenu}>{t.nav.contact}</MobileMenuItem>
                         </div>
 
-                        <div className="p-6 border-t border-green-100 bg-white/50 flex justify-between items-center mt-auto">
+                        <div className="p-6 border-t border-green-100 bg-white/50 flex justify-center items-center mt-auto">
                           <Link to="/faq" onClick={closeMobileMenu} className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
                             {t.nav.faq}
                           </Link>
-                          <button onClick={() => setMobileView('languages')} className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-green-600 transition-colors">
-                            <span>{currentLanguage?.name}</span>
-                            <div className="w-6 h-4 rounded overflow-hidden border border-gray-200">
-                              {currentLanguage?.flag}
-                            </div>
-                          </button>
                         </div>
                       </motion.div>
                     )}
@@ -552,45 +529,6 @@ export function Header() {
                       </motion.div>
                     )}
 
-                    {/* Services View */}
-                    {mobileView === 'services' && (
-                      <motion.div key="services" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={slideTransition} className="h-full overflow-y-auto">
-                        <MobileMenuHeader title={t.nav.services} onBack={() => setMobileView('main')} />
-                        <div className="flex-1 overflow-y-auto pt-10 px-6 space-y-1">
-                          {servicesData.map((service, index, arr) => (
-                            <div key={service.id}>
-                              <MobileMenuItem to={`/services?service=${service.id}`} onClick={closeMobileMenu} icon={service.icon}>
-                                {t.services?.[service.id as keyof typeof t.services] || service.id}
-                              </MobileMenuItem>
-                              {index < arr.length - 1 && <MenuDivider />}
-                            </div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Languages View */}
-                    {mobileView === 'languages' && (
-                      <motion.div key="languages" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={slideTransition} className="h-full overflow-y-auto">
-                        <MobileMenuHeader title="Language / Langue / اللغة" onBack={() => setMobileView('main')} />
-                        <div className="p-4 space-y-2">
-                          {languages.map((lang) => (
-                            <Button
-                              key={lang.code}
-                              variant="ghost"
-                              className={`w-full justify-between text-xl py-6 ${language === lang.code ? 'bg-green-50 text-green-700' : ''}`}
-                              onClick={() => { setLanguage(lang.code); closeMobileMenu(); }}
-                            >
-                              <div className="flex items-center gap-4">
-                                <div className="w-9 h-6 rounded overflow-hidden border border-gray-200 shadow-sm">{lang.flag}</div>
-                                <span className={language === lang.code ? 'font-bold' : ''}>{lang.name}</span>
-                              </div>
-                              {language === lang.code && <Check className="h-6 w-6 text-green-600" />}
-                            </Button>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
                   </AnimatePresence>
                 </div>
               </div>

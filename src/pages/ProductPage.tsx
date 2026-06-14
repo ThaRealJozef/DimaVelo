@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Plus, Minus, MessageCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Header } from '@/components/Header';
@@ -8,6 +8,7 @@ import { Footer } from '@/components/Footer';
 import { DeliveryInfo } from '@/components/DeliveryInfo';
 import { ProductImageGallery } from '@/components/ProductImageGallery';
 import { StickyAddToCart } from '@/components/StickyAddToCart';
+import { ProductConditionBadge } from '@/components/ProductConditionBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +17,7 @@ import { useProducts } from '@/hooks/useProducts';
 import { useCart } from '@/contexts/CartContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Product } from '@/lib/types';
+import { WHATSAPP_NUMBER } from '@/lib/data';
 
 type Language = 'fr' | 'en' | 'ar';
 
@@ -252,10 +254,16 @@ export default function ProductPage() {
                 <Badge variant={product.isAvailable ? 'default' : 'secondary'}>
                   {product.isAvailable ? t.product.inStock : t.product.outOfStock}
                 </Badge>
+                <ProductConditionBadge condition={product.condition} language={language as Language} size="md" />
               </div>
 
               <div className="mb-4 md:mb-6 wrap-break-word">
                 <ProductPrice product={product} />
+                {(product.condition === 'used' || product.condition === 'outlet') && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    {{ fr: 'Condition: Excellente', en: 'Condition: Excellent', ar: 'الحالة: ممتازة' }[language as Language]}
+                  </p>
+                )}
               </div>
 
               <div className="prose max-w-none mb-6 md:mb-8">
@@ -317,9 +325,29 @@ export default function ProductPage() {
                   </Button>
                 </div>
 
-                <Button asChild size="lg" variant="outline" className="w-full">
-                  <Link to="/contact">{t.product.moreInfo}</Link>
-                </Button>
+                {(product.condition === 'used' || product.condition === 'outlet') ? (
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="w-full bg-green-50 hover:bg-green-100 border-green-200"
+                  >
+                    <a
+                      href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                        `Bonjour! Je suis intéressé par: ${productName}`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <MessageCircle className="mr-2 h-5 w-5" />
+                      {{ fr: 'Demande sur WhatsApp', en: 'Inquire on WhatsApp', ar: 'استفسر عبر واتساب' }[language as Language]}
+                    </a>
+                  </Button>
+                ) : (
+                  <Button asChild size="lg" variant="outline" className="w-full">
+                    <Link to="/contact">{t.product.moreInfo}</Link>
+                  </Button>
+                )}
 
                 <div className="pt-4">
                   <DeliveryInfo variant="compact" />

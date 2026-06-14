@@ -15,6 +15,7 @@ const DEFAULT_IMG = 'https://images.unsplash.com/photo-1485965120184-e220f721d03
 
 type Language = 'fr' | 'en' | 'ar';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLocalizedField(item: any, field: string, lang: Language): string {
     const suffix = lang === 'ar' ? 'Ar' : lang === 'en' ? 'En' : 'Fr';
     return item[`${field}${suffix}`] || item[`${field}Fr`] || '';
